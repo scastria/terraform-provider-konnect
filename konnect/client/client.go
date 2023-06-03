@@ -20,6 +20,7 @@ const (
 	Bearer        = "Bearer"
 	KonnectDomain = "api.konghq.com"
 	GlobalRegion  = "global"
+	FilterName    = "filter[name]"
 	// Search                   = "$search"
 	// SearchValue              = "\"%s:%s\""
 	// Filter                   = "$filter"
@@ -103,5 +104,5 @@ func (c *Client) RequestPath(isRegion bool, path string) string {
 	} else {
 		host = c.region
 	}
-	return fmt.Sprintf("https://%s.%s/v1.0/%s", host, KonnectDomain, path)
+	return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
 }
