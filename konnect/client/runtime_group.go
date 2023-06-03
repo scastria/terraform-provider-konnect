@@ -6,10 +6,10 @@ const (
 )
 
 type RuntimeGroup struct {
-	Id          string             `json:"id,omitempty"`
-	Name        string             `json:"appId,omitempty"`
-	Description string             `json:"displayName,omitempty"`
-	Config      RuntimeGroupConfig `json:"config,omitempty"`
+	Id          string              `json:"id,omitempty"`
+	Name        string              `json:"name,omitempty"`
+	Description string              `json:"description"`
+	Config      *RuntimeGroupConfig `json:"config,omitempty"`
 }
 type RuntimeGroupConfig struct {
 	ClusterType          string `json:"cluster_type,omitempty"`

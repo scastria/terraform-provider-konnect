@@ -21,7 +21,9 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("KONNECT_REGION", "us"),
 			},
 		},
-		ResourcesMap: map[string]*schema.Resource{},
+		ResourcesMap: map[string]*schema.Resource{
+			"konnect_runtime_group": resourceRuntimeGroup(),
+		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),
 		},

@@ -13,7 +13,7 @@ import (
 
 const (
 	// FormEncoded              = "application/x-www-form-urlencoded"
-	// ApplicationJson          = "application/json"
+	ApplicationJson = "application/json"
 	// ApplicationXml           = "application/xml"
 	// IdSeparator              = ":"
 	// Basic                    = "Basic"

@@ -9,10 +9,7 @@ terraform {
 provider "konnect" {
 }
 
-data "konnect_runtime_group" "RG" {
-  name = "development"
-}
-
-output "MyOutput" {
-  value = data.konnect_runtime_group.RG
-}
+#resource "konnect_runtime_group" "RG" {
+#  name = "asdf"
+#  description = "adsfasdf"
+#}
