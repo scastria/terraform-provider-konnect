@@ -3,10 +3,17 @@ package provider
 import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-provider-konnect/internal/client"
+	"os"
+)
+
+const (
+	DefaultRegion = "us"
 )
 
 // Ensure KonnectProvider satisfies various provider interfaces.
@@ -22,7 +29,8 @@ type KonnectProvider struct {
 
 // KonnectProviderModel describes the provider data model.
 type KonnectProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
+	pat    types.String `tfsdk:"pat"`
+	region types.String `tfsdk:"region"`
 }
 
 func (p *KonnectProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -32,31 +40,63 @@ func (p *KonnectProvider) Metadata(ctx context.Context, req provider.MetadataReq
 
 func (p *KonnectProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		//Attributes: map[string]schema.Attribute{
-		//	"endpoint": schema.StringAttribute{
-		//		MarkdownDescription: "Example provider attribute",
-		//		Optional:            true,
-		//	},
-		//},
+		Attributes: map[string]schema.Attribute{
+			"pat": schema.StringAttribute{
+				MarkdownDescription: "Personal Access Token. Can be specified via env variable KONNECT_PAT.",
+				Required:            true,
+				Sensitive:           true,
+			},
+			"region": schema.StringAttribute{
+				MarkdownDescription: "Region used for all region specific resources. Can be specified via env variable KONNECT_REGION. Default: us",
+				Optional:            true,
+			},
+		},
 	}
 }
 
 func (p *KonnectProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
-	//var data KonnectProviderModel
-	//
-	//resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-	//
-	//if resp.Diagnostics.HasError() {
-	//	return
-	//}
-	//
-	//// Configuration values are now available.
-	//// if data.Endpoint.IsNull() { /* ... */ }
-	//
-	//// Example client configuration for data sources and resources
-	//client := http.DefaultClient
-	//resp.DataSourceData = client
-	//resp.ResourceData = client
+	var config KonnectProviderModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Configuration values are now available.
+	pat := os.Getenv("KONNECT_PAT")
+	region := os.Getenv("KONNECT_REGION")
+	if region == "" {
+		region = DefaultRegion
+	}
+	if !config.pat.IsNull() {
+		pat = config.pat.ValueString()
+	}
+	if !config.region.IsNull() {
+		region = config.region.ValueString()
+	}
+
+	if pat == "" {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("pat"),
+			"Missing pat",
+			"pat is required",
+		)
+	}
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	c, err := client.NewClient(ctx, pat, region)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to create Konnect http client",
+			"Unable to create Konnect http client",
+		)
+	}
+	resp.DataSourceData = c
+	resp.ResourceData = c
 }
 
 func (p *KonnectProvider) Resources(ctx context.Context) []func() resource.Resource {
