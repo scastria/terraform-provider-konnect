@@ -92,9 +92,9 @@ func resourceAuthenticationSettingsRead(ctx context.Context, d *schema.ResourceD
 func resourceAuthenticationSettingsCreateUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) error {
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	upAuthSets := client.AuthenticationSettings{}
-	fillAuthenticationSettings(&upAuthSets, d)
-	err := json.NewEncoder(&buf).Encode(upAuthSets)
+	upAuthenticationSettings := client.AuthenticationSettings{}
+	fillAuthenticationSettings(&upAuthenticationSettings, d)
+	err := json.NewEncoder(&buf).Encode(upAuthenticationSettings)
 	if err != nil {
 		return err
 	}

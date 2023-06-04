@@ -24,6 +24,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group":          resourceRuntimeGroup(),
 			"konnect_authentication_setting": resourceAuthenticationSettings(),
+			"konnect_identity_provider":      resourceIdentityProvider(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),

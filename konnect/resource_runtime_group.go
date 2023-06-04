@@ -69,9 +69,9 @@ func resourceRuntimeGroupCreate(ctx context.Context, d *schema.ResourceData, m i
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	newRunGroup := client.RuntimeGroup{}
-	fillRuntimeGroup(&newRunGroup, d)
-	err := json.NewEncoder(&buf).Encode(newRunGroup)
+	newRuntimeGroup := client.RuntimeGroup{}
+	fillRuntimeGroup(&newRuntimeGroup, d)
+	err := json.NewEncoder(&buf).Encode(newRuntimeGroup)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
@@ -123,9 +123,9 @@ func resourceRuntimeGroupUpdate(ctx context.Context, d *schema.ResourceData, m i
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	upRunGroup := client.RuntimeGroup{}
-	fillRuntimeGroup(&upRunGroup, d)
-	err := json.NewEncoder(&buf).Encode(upRunGroup)
+	upRuntimeGroup := client.RuntimeGroup{}
+	fillRuntimeGroup(&upRuntimeGroup, d)
+	err := json.NewEncoder(&buf).Encode(upRuntimeGroup)
 	if err != nil {
 		return diag.FromErr(err)
 	}
