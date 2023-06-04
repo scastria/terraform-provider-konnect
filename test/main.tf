@@ -9,9 +9,15 @@ terraform {
 provider "konnect" {
 }
 
-data "konnect_user" "U" {
-  full_name = "Travis Valentine"
-}
+#resource "konnect_user" "U" {
+#  email = "jblow@example.com"
+#  full_name = "Joe Blow"
+#  preferred_name = "Joe"
+#}
+
+#data "konnect_user" "U" {
+#  full_name = "Joe Blow"
+#}
 
 #resource "konnect_identity_provider" "IP" {
 #  issuer = "https://greenst.okta.com/oauth2/default"

@@ -10,7 +10,7 @@ type User struct {
 	Email         string `json:"email,omitempty"`
 	FullName      string `json:"full_name,omitempty"`
 	PreferredName string `json:"preferred_name,omitempty"`
-	Active        bool   `json:"active"`
+	Active        bool   `json:"active,omitempty"`
 }
 type UserCollection struct {
 	Users []User `json:"data"`
