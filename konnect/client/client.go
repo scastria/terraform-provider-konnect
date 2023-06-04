@@ -31,7 +31,7 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func NewClient(ctx context.Context, pat string, region string) (*Client, error) {
+func NewClient(pat string, region string) (*Client, error) {
 	c := &Client{
 		pat:        pat,
 		region:     region,
@@ -92,9 +92,9 @@ func (c *Client) HttpRequest(ctx context.Context, isRegion bool, method string, 
 func (c *Client) RequestPath(isRegion bool, path string) string {
 	var host string
 	if isRegion {
-		host = GlobalRegion
-	} else {
 		host = c.region
+	} else {
+		host = GlobalRegion
 	}
 	return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
 }

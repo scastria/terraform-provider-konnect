@@ -9,6 +9,11 @@ terraform {
 provider "konnect" {
 }
 
+#resource "konnect_team" "T" {
+#  name = "ShawnTest"
+#  description = "testing"
+#}
+
 #data "konnect_team" "T" {
 #  search_name = "eve"
 #}

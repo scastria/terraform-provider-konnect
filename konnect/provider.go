@@ -26,6 +26,7 @@ func Provider() *schema.Provider {
 			"konnect_authentication_setting": resourceAuthenticationSettings(),
 			"konnect_identity_provider":      resourceIdentityProvider(),
 			"konnect_user":                   resourceUser(),
+			"konnect_team":                   resourceTeam(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),
@@ -41,7 +42,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	region := d.Get("region").(string)
 
 	var diags diag.Diagnostics
-	c, err := client.NewClient(ctx, pat, region)
+	c, err := client.NewClient(pat, region)
 	if err != nil {
 		return nil, diag.FromErr(err)
 	}

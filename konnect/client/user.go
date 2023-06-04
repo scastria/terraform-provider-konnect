@@ -8,8 +8,8 @@ const (
 type User struct {
 	Id            string `json:"id,omitempty"`
 	Email         string `json:"email,omitempty"`
-	FullName      string `json:"full_name,omitempty"`
-	PreferredName string `json:"preferred_name,omitempty"`
+	FullName      string `json:"full_name"`
+	PreferredName string `json:"preferred_name"`
 	Active        bool   `json:"active,omitempty"`
 }
 type UserCollection struct {

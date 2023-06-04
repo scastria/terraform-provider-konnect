@@ -11,5 +11,5 @@ data "konnect_team" "example" {
 * `name` - **(Optional, String)** The filter string to apply to the name of the team. Uses equality.
 ## Attribute Reference
 * `id` - **(String)** Guid
-* `description` - **(String)** The preferred description of the team.
+* `description` - **(String)** The description of the team.
 * `is_predefined` - **(Boolean)** Whether the team is predefined.

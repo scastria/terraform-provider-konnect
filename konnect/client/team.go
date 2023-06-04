@@ -8,7 +8,7 @@ const (
 type Team struct {
 	Id           string `json:"id,omitempty"`
 	Name         string `json:"name,omitempty"`
-	Description  string `json:"description,omitempty"`
+	Description  string `json:"description"`
 	IsPredefined bool   `json:"system_team,omitempty"`
 }
 type TeamCollection struct {
