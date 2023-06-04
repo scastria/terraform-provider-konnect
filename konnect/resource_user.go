@@ -37,7 +37,6 @@ func resourceUser() *schema.Resource {
 			"active": {
 				Type:     schema.TypeBool,
 				Computed: true,
-				Default:  true,
 			},
 		},
 	}

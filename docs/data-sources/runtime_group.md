@@ -7,7 +7,8 @@ data "konnect_runtime_group" "example" {
 }
 ```
 ## Argument Reference
-* `name` - **(Required, String)** The name of the runtime group.
+* `search_name` - **(Optional, String)** The search string to apply to the name of the runtime group. Uses contains.
+* `name` - **(Optional, String)** The filter string to apply to the name of the runtime group. Uses equality.
 ## Attribute Reference
 * `id` - **(String)** Guid
 * `description` - **(String)** The description of the runtime group.

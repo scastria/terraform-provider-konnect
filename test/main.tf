@@ -9,6 +9,10 @@ terraform {
 provider "konnect" {
 }
 
+#data "konnect_team" "T" {
+#  search_name = "eve"
+#}
+
 #resource "konnect_user" "U" {
 #  email = "jblow@example.com"
 #  full_name = "Joe Blow"

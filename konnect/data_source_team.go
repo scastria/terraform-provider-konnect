@@ -12,9 +12,9 @@ import (
 	"net/url"
 )
 
-func dataSourceRuntimeGroup() *schema.Resource {
+func dataSourceTeam() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRuntimeGroupRead,
+		ReadContext: dataSourceTeamRead,
 		Schema: map[string]*schema.Schema{
 			"search_name": {
 				Type:     schema.TypeString,
@@ -28,23 +28,15 @@ func dataSourceRuntimeGroup() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"cluster_type": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"control_plane_endpoint": {
-				Type:     schema.TypeString,
-				Computed: true,
-			},
-			"telemetry_endpoint": {
-				Type:     schema.TypeString,
+			"is_predefined": {
+				Type:     schema.TypeBool,
 				Computed: true,
 			},
 		},
 	}
 }
 
-func dataSourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceTeamRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	requestQuery := url.Values{}
@@ -56,31 +48,29 @@ func dataSourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m i
 	if ok {
 		requestQuery[client.FilterName] = []string{name.(string)}
 	}
-	body, err := c.HttpRequest(ctx, true, http.MethodGet, client.RuntimeGroupPath, requestQuery, nil, &bytes.Buffer{})
+	body, err := c.HttpRequest(ctx, false, http.MethodGet, client.TeamPath, requestQuery, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVals := &client.RuntimeGroupCollection{}
+	retVals := &client.TeamCollection{}
 	err = json.NewDecoder(body).Decode(retVals)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	numRuntimeGroups := len(retVals.RuntimeGroups)
-	if numRuntimeGroups > 1 {
+	numTeams := len(retVals.Teams)
+	if numTeams > 1 {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("Filter criteria does not result in a single runtime group"))
-	} else if numRuntimeGroups != 1 {
+		return diag.FromErr(fmt.Errorf("Filter criteria does not result in a single team"))
+	} else if numTeams != 1 {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("No runtime group exists with that filter criteria"))
+		return diag.FromErr(fmt.Errorf("No team exists with that filter criteria"))
 	}
-	retVal := retVals.RuntimeGroups[0]
+	retVal := retVals.Teams[0]
 	d.Set("name", retVal.Name)
 	d.Set("description", retVal.Description)
-	d.Set("cluster_type", retVal.Config.ClusterType)
-	d.Set("control_plane_endpoint", retVal.Config.ControlPlaneEndpoint)
-	d.Set("telemetry_endpoint", retVal.Config.TelemetryEndpoint)
+	d.Set("is_predefined", retVal.IsPredefined)
 	d.SetId(retVal.Id)
 	return diags
 }

@@ -30,6 +30,7 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),
 			"konnect_user":          dataSourceUser(),
+			"konnect_team":          dataSourceTeam(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

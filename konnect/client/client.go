@@ -17,6 +17,7 @@ const (
 	KonnectDomain          = "api.konghq.com"
 	GlobalRegion           = "global"
 	FilterName             = "filter[name]"
+	FilterNameContains     = "filter[name][contains]"
 	FilterFullName         = "filter[full_name]"
 	FilterFullNameContains = "filter[full_name][contains]"
 	FilterEmail            = "filter[email]"
