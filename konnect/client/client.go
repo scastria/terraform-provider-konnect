@@ -12,25 +12,16 @@ import (
 )
 
 const (
-	// FormEncoded              = "application/x-www-form-urlencoded"
-	ApplicationJson = "application/json"
-	// ApplicationXml           = "application/xml"
-	// IdSeparator              = ":"
-	// Basic                    = "Basic"
-	Bearer        = "Bearer"
-	KonnectDomain = "api.konghq.com"
-	GlobalRegion  = "global"
-	FilterName    = "filter[name]"
-	// Search                   = "$search"
-	// SearchValue              = "\"%s:%s\""
-	// Filter                   = "$filter"
-	// FilterValue              = "%s eq '%s'"
-	// FilterAnd                = " and "
-	// Public                   = "Public"
-	// Private                  = "Private"
-	// WaitNotExists            = "NotExists"
-	// WaitFound                = "Found"
-	// WaitError                = "Error"
+	ApplicationJson        = "application/json"
+	Bearer                 = "Bearer"
+	KonnectDomain          = "api.konghq.com"
+	GlobalRegion           = "global"
+	FilterName             = "filter[name]"
+	FilterFullName         = "filter[full_name]"
+	FilterFullNameContains = "filter[full_name][contains]"
+	FilterEmail            = "filter[email]"
+	FilterEmailContains    = "filter[email][contains]"
+	FilterActive           = "filter[active]"
 )
 
 type Client struct {

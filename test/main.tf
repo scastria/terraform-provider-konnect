@@ -9,6 +9,10 @@ terraform {
 provider "konnect" {
 }
 
+data "konnect_user" "U" {
+  full_name = "Travis Valentine"
+}
+
 #resource "konnect_identity_provider" "IP" {
 #  issuer = "https://greenst.okta.com/oauth2/default"
 #  client_id = "0oambh387v9ETDgCz2p7"

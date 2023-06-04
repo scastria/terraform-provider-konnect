@@ -57,8 +57,8 @@ func dataSourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m i
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	numRunGroups := len(retVals.RuntimeGroups)
-	if numRunGroups != 1 {
+	numRuntimeGroups := len(retVals.RuntimeGroups)
+	if numRuntimeGroups != 1 {
 		d.SetId("")
 		return diag.FromErr(fmt.Errorf("No runtime group exists with name: %s", name))
 	}
