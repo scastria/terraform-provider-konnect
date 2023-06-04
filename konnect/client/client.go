@@ -39,7 +39,7 @@ type Client struct {
 	httpClient *http.Client
 }
 
-func NewClient(ctx context.Context, pat string, region string) (client *Client, err error) {
+func NewClient(ctx context.Context, pat string, region string) (*Client, error) {
 	c := &Client{
 		pat:        pat,
 		region:     region,
@@ -48,7 +48,7 @@ func NewClient(ctx context.Context, pat string, region string) (client *Client, 
 	return c, nil
 }
 
-func (c *Client) HttpRequest(ctx context.Context, isRegion bool, method string, path string, query url.Values, headerMap http.Header, body *bytes.Buffer) (response *bytes.Buffer, err error) {
+func (c *Client) HttpRequest(ctx context.Context, isRegion bool, method string, path string, query url.Values, headerMap http.Header, body *bytes.Buffer) (*bytes.Buffer, error) {
 	req, err := http.NewRequest(method, c.RequestPath(isRegion, path), body)
 	if err != nil {
 		return nil, &RequestError{StatusCode: http.StatusInternalServerError, Err: err}

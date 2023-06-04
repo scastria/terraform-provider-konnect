@@ -49,6 +49,22 @@ func resourceRuntimeGroup() *schema.Resource {
 	}
 }
 
+func fillRuntimeGroup(c *client.RuntimeGroup, d *schema.ResourceData) {
+	c.Name = d.Get("name").(string)
+	description, ok := d.GetOk("description")
+	if ok {
+		c.Description = description.(string)
+	}
+}
+
+func fillResourceDataFromRuntimeGroup(c *client.RuntimeGroup, d *schema.ResourceData) {
+	d.Set("name", c.Name)
+	d.Set("description", c.Description)
+	d.Set("cluster_type", c.Config.ClusterType)
+	d.Set("control_plane_endpoint", c.Config.ControlPlaneEndpoint)
+	d.Set("telemetry_endpoint", c.Config.TelemetryEndpoint)
+}
+
 func resourceRuntimeGroupCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
@@ -76,24 +92,8 @@ func resourceRuntimeGroupCreate(ctx context.Context, d *schema.ResourceData, m i
 		return diag.FromErr(err)
 	}
 	d.SetId(retVal.Id)
-	fillResourceData(retVal, d)
+	fillResourceDataFromRuntimeGroup(retVal, d)
 	return diags
-}
-
-func fillRuntimeGroup(c *client.RuntimeGroup, d *schema.ResourceData) {
-	c.Name = d.Get("name").(string)
-	description, ok := d.GetOk("description")
-	if ok {
-		c.Description = description.(string)
-	}
-}
-
-func fillResourceData(c *client.RuntimeGroup, d *schema.ResourceData) {
-	d.Set("name", c.Name)
-	d.Set("description", c.Description)
-	d.Set("cluster_type", c.Config.ClusterType)
-	d.Set("control_plane_endpoint", c.Config.ControlPlaneEndpoint)
-	d.Set("telemetry_endpoint", c.Config.TelemetryEndpoint)
 }
 
 func resourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -115,7 +115,7 @@ func resourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m int
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	fillResourceData(retVal, d)
+	fillResourceDataFromRuntimeGroup(retVal, d)
 	return diags
 }
 
@@ -142,7 +142,7 @@ func resourceRuntimeGroupUpdate(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	fillResourceData(retVal, d)
+	fillResourceDataFromRuntimeGroup(retVal, d)
 	return diags
 }
 
