@@ -2,6 +2,9 @@ package client
 
 const (
 	IdentityProviderPath = "identity-provider"
+	EmailClaim           = "email"
+	NameClaim            = "name"
+	GroupsClaim          = "groups"
 )
 
 type IdentityProvider struct {

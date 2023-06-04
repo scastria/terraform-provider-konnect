@@ -15,6 +15,6 @@ resource "konnect_authentication_settings" "example" {
 * `idp_mapping_enabled` - **(Optional, Boolean)** Whether IDP mapping is enabled.
 * `konnect_mapping_enabled` - **(Optional, Boolean)** Whether Konnect mapping is enabled.
 ## Attribute Reference
-* `id` - **(String)** Always equal to `authentication_settings`
+* `id` - **(String)** Always equal to `authentication-settings`
 ## Import
 Authentication settings can be imported using a proper value of `id` as described above

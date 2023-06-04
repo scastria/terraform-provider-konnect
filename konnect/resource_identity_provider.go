@@ -41,12 +41,17 @@ func resourceIdentityProvider() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"claim_mappings": {
-				Type:     schema.TypeMap,
+			"email_claim_mapping": {
+				Type:     schema.TypeString,
 				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+			},
+			"name_claim_mapping": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"groups_claim_mapping": {
+				Type:     schema.TypeString,
+				Optional: true,
 			},
 		},
 	}
@@ -69,15 +74,18 @@ func fillIdentityProvider(c *client.IdentityProvider, d *schema.ResourceData) {
 	if ok {
 		c.Scopes = convertSetToArray(scopes.(*schema.Set))
 	}
-	cm, ok := d.GetOk("claim_mappings")
+	c.ClaimMappings = map[string]string{}
+	emailMapping, ok := d.GetOk("email_claim_mapping")
 	if ok {
-		if c.ClaimMappings == nil {
-			c.ClaimMappings = map[string]string{}
-		}
-		claimMappings := cm.(map[string]interface{})
-		for name, value := range claimMappings {
-			c.ClaimMappings[name] = value.(string)
-		}
+		c.ClaimMappings[client.EmailClaim] = emailMapping.(string)
+	}
+	nameMapping, ok := d.GetOk("name_claim_mapping")
+	if ok {
+		c.ClaimMappings[client.NameClaim] = nameMapping.(string)
+	}
+	groupsMapping, ok := d.GetOk("groups_claim_mapping")
+	if ok {
+		c.ClaimMappings[client.GroupsClaim] = groupsMapping.(string)
 	}
 }
 
@@ -86,7 +94,15 @@ func fillResourceDataFromIdentityProvider(c *client.IdentityProvider, d *schema.
 	d.Set("login_path", c.LoginPath)
 	d.Set("client_id", c.ClientId)
 	d.Set("scopes", c.Scopes)
-	d.Set("claim_mappings", c.ClaimMappings)
+	if c.ClaimMappings == nil {
+		d.Set("email_claim_mapping", "")
+		d.Set("name_claim_mapping", "")
+		d.Set("groups_claim_mapping", "")
+	} else {
+		d.Set("email_claim_mapping", c.ClaimMappings[client.EmailClaim])
+		d.Set("name_claim_mapping", c.ClaimMappings[client.NameClaim])
+		d.Set("groups_claim_mapping", c.ClaimMappings[client.GroupsClaim])
+	}
 }
 
 func resourceIdentityProviderCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
