@@ -16,6 +16,7 @@ const (
 	Bearer                 = "Bearer"
 	KonnectDomain          = "api.konghq.com"
 	GlobalRegion           = "global"
+	IdSeparator            = ":"
 	FilterName             = "filter[name]"
 	FilterNameContains     = "filter[name][contains]"
 	FilterFullName         = "filter[full_name]"

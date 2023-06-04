@@ -9,10 +9,10 @@ terraform {
 provider "konnect" {
 }
 
-#resource "konnect_team" "T" {
-#  name = "ShawnTest"
-#  description = "testing"
-#}
+resource "konnect_team" "T" {
+  name = "ShawnTest"
+  description = "testing"
+}
 
 #data "konnect_team" "T" {
 #  search_name = "eve"
@@ -24,9 +24,14 @@ provider "konnect" {
 #  preferred_name = "Joe"
 #}
 
-#data "konnect_user" "U" {
-#  full_name = "Joe Blow"
-#}
+data "konnect_user" "U" {
+  search_full_name = "Julia"
+}
+
+resource "konnect_team_user" "TU" {
+  team_id = konnect_team.T.id
+  user_id = data.konnect_user.U.id
+}
 
 #resource "konnect_identity_provider" "IP" {
 #  issuer = "https://greenst.okta.com/oauth2/default"
