@@ -9,14 +9,14 @@ terraform {
 provider "konnect" {
 }
 
-data "konnect_team_role" "TR" {
-  team_id = data.konnect_team.T.id
-  entity_type_display_name = "Runtime Groups"
-}
+#data "konnect_team_role" "TR" {
+#  team_id = data.konnect_team.T.id
+#  entity_type_display_name = "Runtime Groups"
+#}
 
 #data "konnect_role" "R" {
 #  group_display_name = "Runtime Groups"
-#  display_name = "Admin"
+#  display_name = "Creator"
 #}
 
 #resource "konnect_team" "T" {
@@ -24,9 +24,17 @@ data "konnect_team_role" "TR" {
 #  description = "testing"
 #}
 
-data "konnect_team" "T" {
-  name = "runtime-admin"
-}
+#resource "konnect_team_role" "TR" {
+#  team_id = konnect_team.T.id
+#  entity_id = konnect_runtime_group.RG.id
+#  entity_type_display_name = "Runtime Groups"
+#  entity_region = "us"
+#  role_display_name = data.konnect_role.R.display_name
+#}
+
+#data "konnect_team" "T" {
+#  name = "runtime-admin"
+#}
 
 #resource "konnect_user" "U" {
 #  email = "jblow@example.com"
@@ -65,6 +73,6 @@ data "konnect_team" "T" {
 #}
 
 #resource "konnect_runtime_group" "RG" {
-#  name = "asdf"
-#  description = "adsfasdf"
+#  name = "ShawnRG"
+#  description = "testing"
 #}
