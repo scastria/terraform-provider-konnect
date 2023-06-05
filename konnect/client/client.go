@@ -12,18 +12,22 @@ import (
 )
 
 const (
-	ApplicationJson        = "application/json"
-	Bearer                 = "Bearer"
-	KonnectDomain          = "api.konghq.com"
-	GlobalRegion           = "global"
-	IdSeparator            = ":"
-	FilterName             = "filter[name]"
-	FilterNameContains     = "filter[name][contains]"
-	FilterFullName         = "filter[full_name]"
-	FilterFullNameContains = "filter[full_name][contains]"
-	FilterEmail            = "filter[email]"
-	FilterEmailContains    = "filter[email][contains]"
-	FilterActive           = "filter[active]"
+	ApplicationJson              = "application/json"
+	Bearer                       = "Bearer"
+	KonnectDomain                = "api.konghq.com"
+	GlobalRegion                 = "global"
+	IdSeparator                  = ":"
+	FilterName                   = "filter[name]"
+	FilterNameContains           = "filter[name][contains]"
+	FilterFullName               = "filter[full_name]"
+	FilterFullNameContains       = "filter[full_name][contains]"
+	FilterEmail                  = "filter[email]"
+	FilterEmailContains          = "filter[email][contains]"
+	FilterActive                 = "filter[active]"
+	FilterRoleName               = "filter[role_name]"
+	FilterRoleNameContains       = "filter[role_name][contains]"
+	FilterEntityTypeName         = "filter[entity_type_name]"
+	FilterEntityTypeNameContains = "filter[entity_type_name][contains]"
 )
 
 type Client struct {

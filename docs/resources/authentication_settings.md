@@ -1,5 +1,5 @@
 # Resource: konnect_authentication_settings
-Represents Konnect authentication settings
+Represents authentication settings
 ## Example usage
 ```hcl
 resource "konnect_authentication_settings" "example" {

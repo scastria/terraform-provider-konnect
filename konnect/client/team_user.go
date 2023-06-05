@@ -13,8 +13,8 @@ type TeamUser struct {
 	UserId string `json:"id"`
 }
 
-func (tm *TeamUser) TeamUserEncodeId() string {
-	return tm.TeamId + IdSeparator + tm.UserId
+func (tu *TeamUser) TeamUserEncodeId() string {
+	return tu.TeamId + IdSeparator + tu.UserId
 }
 
 func TeamUserDecodeId(s string) (string, string) {

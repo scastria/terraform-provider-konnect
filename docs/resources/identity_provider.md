@@ -1,5 +1,5 @@
 # Resource: konnect_identity_provider
-Represents Konnect identity provider settings
+Represents identity provider settings
 ## Example usage
 ```hcl
 resource "konnect_identity_provider" "example" {

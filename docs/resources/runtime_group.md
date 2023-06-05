@@ -1,5 +1,5 @@
 # Resource: konnect_runtime_group
-Represents a Konnect runtime group
+Represents a runtime group
 ## Example usage
 ```hcl
 resource "konnect_runtime_group" "example" {

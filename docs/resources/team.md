@@ -1,5 +1,5 @@
 # Resource: konnect_team
-Represents a Konnect team
+Represents a team
 ## Example usage
 ```hcl
 resource "konnect_team" "example" {

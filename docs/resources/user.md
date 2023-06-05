@@ -1,5 +1,5 @@
 # Resource: konnect_user
-Represents a Konnect user
+Represents a user
 ## Example usage
 ```hcl
 resource "konnect_user" "example" {

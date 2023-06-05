@@ -9,19 +9,24 @@ terraform {
 provider "konnect" {
 }
 
-data "konnect_role" "R" {
-  group_display_name = "Runtime Groups"
-  display_name = "Admin"
+data "konnect_team_role" "TR" {
+  team_id = data.konnect_team.T.id
+  entity_type_display_name = "Runtime Groups"
 }
+
+#data "konnect_role" "R" {
+#  group_display_name = "Runtime Groups"
+#  display_name = "Admin"
+#}
 
 #resource "konnect_team" "T" {
 #  name = "ShawnTest"
 #  description = "testing"
 #}
 
-#data "konnect_team" "T" {
-#  search_name = "eve"
-#}
+data "konnect_team" "T" {
+  name = "runtime-admin"
+}
 
 #resource "konnect_user" "U" {
 #  email = "jblow@example.com"

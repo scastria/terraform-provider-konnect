@@ -1,5 +1,5 @@
 # Data Source: konnect_team
-Represents a Konnect team
+Represents a team
 ## Example usage
 ```hcl
 data "konnect_team" "example" {

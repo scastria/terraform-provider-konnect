@@ -1,5 +1,5 @@
 # Data Source: konnect_runtime_group
-Represents a Konnect runtime group
+Represents a runtime group
 ## Example usage
 ```hcl
 data "konnect_runtime_group" "example" {

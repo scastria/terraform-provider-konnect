@@ -1,5 +1,5 @@
 # Data Source: konnect_user
-Represents a Konnect user
+Represents a user
 ## Example usage
 ```hcl
 data "konnect_user" "example" {

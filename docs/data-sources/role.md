@@ -1,5 +1,5 @@
 # Data Source: konnect_role
-Represents a Konnect role
+Represents a role
 ## Example usage
 ```hcl
 data "konnect_role" "example" {
