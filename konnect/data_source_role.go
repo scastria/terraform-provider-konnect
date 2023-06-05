@@ -57,20 +57,26 @@ func dataSourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	// Find requested role by display names
-	var roleGroup client.RoleGroup
-	var groupName string
-	if groupDisplayName == client.RuntimeGroupsDisplayName {
-		roleGroup = retVals.RuntimeGroups
-		groupName = client.RuntimeGroupsName
-	} else {
-		roleGroup = retVals.Services
-		groupName = client.ServicesName
+	// Find requested role group by display name
+	var foundGroup *client.RoleGroup
+	foundGroup = nil
+	foundGroupName := ""
+	for k, g := range *retVals {
+		if g.DisplayName == groupDisplayName {
+			foundGroup = &g
+			foundGroupName = k
+			break
+		}
 	}
+	if foundGroup == nil {
+		d.SetId("")
+		return diag.FromErr(fmt.Errorf("No role exists with that filter criteria"))
+	}
+	// Find requested role by display name
 	var foundRole *client.Role
 	foundRole = nil
 	foundRoleName := ""
-	for k, r := range roleGroup.RoleMap {
+	for k, r := range (*retVals)[foundGroupName].RoleMap {
 		if r.DisplayName == displayName {
 			foundRole = &r
 			foundRoleName = k
@@ -81,9 +87,9 @@ func dataSourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface
 		d.SetId("")
 		return diag.FromErr(fmt.Errorf("No role exists with that filter criteria"))
 	}
-	d.Set("group_name", groupName)
+	d.Set("group_name", foundGroupName)
 	d.Set("name", foundRoleName)
 	d.Set("description", foundRole.Description)
-	d.SetId(groupName + client.IdSeparator + foundRoleName)
+	d.SetId(foundGroupName + client.IdSeparator + foundRoleName)
 	return diags
 }

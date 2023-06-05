@@ -10,8 +10,8 @@ provider "konnect" {
 }
 
 data "konnect_role" "R" {
-  group_display_name = "Services"
-  display_name = "Application Registration"
+  group_display_name = "Runtime Groups"
+  display_name = "Admin"
 }
 
 #resource "konnect_team" "T" {
