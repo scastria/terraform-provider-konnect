@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Resource: konnect_identity_provider
 Represents identity provider settings
 ## Example usage

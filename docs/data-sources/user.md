@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Data Source: konnect_user
 Represents a user
 ## Example usage

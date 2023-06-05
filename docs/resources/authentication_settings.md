@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Resource: konnect_authentication_settings
 Represents authentication settings
 ## Example usage

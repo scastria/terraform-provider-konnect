@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Data Source: konnect_team
 Represents a team
 ## Example usage

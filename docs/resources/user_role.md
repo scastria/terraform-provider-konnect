@@ -1,13 +1,14 @@
 ---
 subcategory: "Identity Management"
 ---
-# Resource: konnect_team_role
-Represents a role assigned to a team to access a given entity
+# Resource: konnect_user_role
+Represents a role assigned to a user to access a given entity
 ## Example usage
 ```hcl
-resource "konnect_team" "Team" {
-  name = "Test"
-  description = "testing"
+resource "konnect_user" "User" {
+  email = "Joe.Burrow@example.com"
+  full_name = "Joe Burrow"
+  preferred_name = "Joe"
 }
 data "konnect_role" "Role" {
   group_display_name = "Runtime Groups"
@@ -17,8 +18,8 @@ resource "konnect_runtime_group" "RuntimeGroup" {
   name = "TestRG"
   description = "testing"
 }
-resource "konnect_team_role" "example" {
-  team_id = konnect_team.Team.id
+resource "konnect_user_role" "example" {
+  user_id = konnect_user.User.id
   entity_id = konnect_runtime_group.RuntimeGroup.id
   entity_type_display_name = "Runtime Groups"
   entity_region = "us"
@@ -26,12 +27,12 @@ resource "konnect_team_role" "example" {
 }
 ```
 ## Argument Reference
-* `team_id` - **(Required, ForceNew, String)** The id of the team assigned the role
+* `user_id` - **(Required, ForceNew, String)** The id of the user assigned the role
 * `role_display_name` - **(Required, ForceNew, String)** The display name of the role.
 * `entity_type_display_name` - **(Required, ForceNew, String)** The display name of the entity type, like `Runtime Groups` or `Services`.
 * `entity_id` - **(Required, ForceNew, String)** The id of the entity for which the role applies.
 * `entity_region` - **(Required, ForceNew, String)** The region of the entity for which the role applies.
 ## Attribute Reference
-* `id` - **(String)** Same as `team_id`:`Guid of role assignment`
+* `id` - **(String)** Same as `user_id`:`Guid of role assignment`
 ## Import
-Team roles can be imported using a proper value of `id` as described above
+User roles can be imported using a proper value of `id` as described above

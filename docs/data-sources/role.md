@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Data Source: konnect_role
 Represents a role
 ## Example usage

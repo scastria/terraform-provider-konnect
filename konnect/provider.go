@@ -29,6 +29,7 @@ func Provider() *schema.Provider {
 			"konnect_team":                   resourceTeam(),
 			"konnect_team_user":              resourceTeamUser(),
 			"konnect_team_role":              resourceTeamRole(),
+			"konnect_user_role":              resourceUserRole(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),
@@ -36,6 +37,7 @@ func Provider() *schema.Provider {
 			"konnect_team":          dataSourceTeam(),
 			"konnect_role":          dataSourceRole(),
 			"konnect_team_role":     dataSourceTeamRole(),
+			"konnect_user_role":     dataSourceUserRole(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

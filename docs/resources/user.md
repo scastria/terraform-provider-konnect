@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Resource: konnect_user
 Represents a user
 ## Example usage

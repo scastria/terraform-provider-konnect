@@ -1,3 +1,6 @@
+---
+subcategory: "Identity Management"
+---
 # Resource: konnect_team
 Represents a team
 ## Example usage

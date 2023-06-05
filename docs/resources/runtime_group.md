@@ -1,3 +1,6 @@
+---
+subcategory: "Runtime Groups"
+---
 # Resource: konnect_runtime_group
 Represents a runtime group
 ## Example usage

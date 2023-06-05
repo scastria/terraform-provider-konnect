@@ -9,6 +9,14 @@ terraform {
 provider "konnect" {
 }
 
+#resource "konnect_user_role" "UR" {
+#  user_id = data.konnect_user.U.id
+#  entity_id = data.konnect_runtime_group.RG.id
+#  entity_type_display_name = "Runtime Groups"
+#  entity_region = "us"
+#  role_display_name = data.konnect_role.R.display_name
+#}
+
 #data "konnect_team_role" "TR" {
 #  team_id = data.konnect_team.T.id
 #  entity_type_display_name = "Runtime Groups"
@@ -16,7 +24,7 @@ provider "konnect" {
 
 #data "konnect_role" "R" {
 #  group_display_name = "Runtime Groups"
-#  display_name = "Creator"
+#  display_name = "Admin"
 #}
 
 #resource "konnect_team" "T" {
@@ -75,4 +83,8 @@ provider "konnect" {
 #resource "konnect_runtime_group" "RG" {
 #  name = "ShawnRG"
 #  description = "testing"
+#}
+
+#data "konnect_runtime_group" "RG" {
+#  name = "development"
 #}
