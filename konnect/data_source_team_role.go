@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/scastria/terraform-provider-konnect/konnect/client"
 	"net/http"
 	"net/url"
@@ -33,8 +34,9 @@ func dataSourceTeamRole() *schema.Resource {
 				Optional: true,
 			},
 			"entity_type_display_name": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringInSlice([]string{client.RuntimeGroupsDisplayName, client.ServicesDisplayName}, false),
 			},
 			"entity_id": {
 				Type:     schema.TypeString,

@@ -7,9 +7,11 @@ import (
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/scastria/terraform-provider-konnect/konnect/client"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strconv"
 )
 
@@ -22,8 +24,9 @@ func dataSourceUser() *schema.Resource {
 				Optional: true,
 			},
 			"email": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile(`^[^\s@]+@[^\s@]+\.[^\s@]+$`), "must be a valid email address"),
 			},
 			"search_full_name": {
 				Type:     schema.TypeString,

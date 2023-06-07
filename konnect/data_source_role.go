@@ -16,7 +16,7 @@ func dataSourceRole() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceRoleRead,
 		Schema: map[string]*schema.Schema{
-			"group_display_name": {
+			"entity_type_display_name": {
 				Type:         schema.TypeString,
 				Required:     true,
 				ValidateFunc: validation.StringInSlice([]string{client.RuntimeGroupsDisplayName, client.ServicesDisplayName}, false),
@@ -25,7 +25,7 @@ func dataSourceRole() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"group_name": {
+			"entity_type_name": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -44,7 +44,7 @@ func dataSourceRole() *schema.Resource {
 func dataSourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
-	groupDisplayName := d.Get("group_display_name").(string)
+	entityTypeDisplayName := d.Get("entity_type_display_name").(string)
 	displayName := d.Get("display_name").(string)
 	body, err := c.HttpRequest(ctx, false, http.MethodGet, client.RolePath, nil, nil, &bytes.Buffer{})
 	if err != nil {
@@ -62,7 +62,7 @@ func dataSourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface
 	foundGroup = nil
 	foundGroupName := ""
 	for k, g := range *retVals {
-		if g.DisplayName == groupDisplayName {
+		if g.DisplayName == entityTypeDisplayName {
 			foundGroup = &g
 			foundGroupName = k
 			break
@@ -87,7 +87,7 @@ func dataSourceRoleRead(ctx context.Context, d *schema.ResourceData, m interface
 		d.SetId("")
 		return diag.FromErr(fmt.Errorf("No role exists with that filter criteria"))
 	}
-	d.Set("group_name", foundGroupName)
+	d.Set("entity_type_name", foundGroupName)
 	d.Set("name", foundRoleName)
 	d.Set("description", foundRole.Description)
 	d.SetId(foundGroupName + client.IdSeparator + foundRoleName)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/scastria/terraform-provider-konnect/konnect/client"
 )
 
@@ -16,9 +17,10 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("KONNECT_PAT", nil),
 			},
 			"region": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("KONNECT_REGION", "us"),
+				Type:         schema.TypeString,
+				Optional:     true,
+				DefaultFunc:  schema.EnvDefaultFunc("KONNECT_REGION", "us"),
+				ValidateFunc: validation.StringInSlice([]string{"us", "eu"}, false),
 			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
@@ -30,6 +32,7 @@ func Provider() *schema.Provider {
 			"konnect_team_user":              resourceTeamUser(),
 			"konnect_team_role":              resourceTeamRole(),
 			"konnect_user_role":              resourceUserRole(),
+			"konnect_service":                resourceService(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),

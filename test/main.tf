@@ -9,9 +9,15 @@ terraform {
 provider "konnect" {
 }
 
-data "konnect_nodes" "Ns" {
-  runtime_group_id = data.konnect_runtime_group.RG.id
-}
+#resource "konnect_service" "S" {
+#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  host = "mockbin.org"
+#  name = "TFTest"
+#}
+
+#data "konnect_nodes" "Ns" {
+#  runtime_group_id = data.konnect_runtime_group.RG.id
+#}
 
 #resource "konnect_user_role" "UR" {
 #  user_id = data.konnect_user.U.id
