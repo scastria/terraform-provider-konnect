@@ -9,6 +9,10 @@ terraform {
 provider "konnect" {
 }
 
+data "konnect_nodes" "Ns" {
+  runtime_group_id = data.konnect_runtime_group.RG.id
+}
+
 #resource "konnect_user_role" "UR" {
 #  user_id = data.konnect_user.U.id
 #  entity_id = data.konnect_runtime_group.RG.id
@@ -85,6 +89,6 @@ provider "konnect" {
 #  description = "testing"
 #}
 
-#data "konnect_runtime_group" "RG" {
-#  name = "development"
-#}
+data "konnect_runtime_group" "RG" {
+  name = "development"
+}

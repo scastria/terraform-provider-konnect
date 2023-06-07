@@ -1,5 +1,5 @@
 ---
-subcategory: "Runtime Groups"
+subcategory: "Runtime Configuration"
 ---
 # Data Source: konnect_runtime_group
 Represents a runtime group
