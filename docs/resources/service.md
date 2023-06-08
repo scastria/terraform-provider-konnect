@@ -27,6 +27,7 @@ resource "konnect_service" "example" {
 * `write_timeout` - **(Optional, Integer)** The timeout in milliseconds between two successive write operations for transmitting a request to the host. Default: `60000`
 * `enabled` - **(Optional, Boolean)** Whether the Service is active. Default: `true`
 ## Attribute Reference
-* `id` - **(String)** Same as `runtime_group_id`:`id`
+* `id` - **(String)** Same as `runtime_group_id`:`service_id`
+* `service_id` - **(String)** Id of the service alone
 ## Import
 Services can be imported using a proper value of `id` as described above

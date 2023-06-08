@@ -33,6 +33,7 @@ func Provider() *schema.Provider {
 			"konnect_team_role":              resourceTeamRole(),
 			"konnect_user_role":              resourceUserRole(),
 			"konnect_service":                resourceService(),
+			"konnect_route":                  resourceRoute(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),

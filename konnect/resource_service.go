@@ -80,6 +80,10 @@ func resourceService() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"service_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -134,6 +138,7 @@ func fillResourceDataFromService(c *client.Service, d *schema.ResourceData) {
 	d.Set("read_timeout", c.ReadTimeout)
 	d.Set("write_timeout", c.WriteTimeout)
 	d.Set("enabled", c.Enabled)
+	d.Set("service_id", c.Id)
 }
 
 func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -162,8 +167,8 @@ func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interf
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	d.SetId(retVal.ServiceEncodeId())
 	retVal.RuntimeGroupId = newService.RuntimeGroupId
+	d.SetId(retVal.ServiceEncodeId())
 	fillResourceDataFromService(retVal, d)
 	return diags
 }

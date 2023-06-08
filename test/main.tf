@@ -9,11 +9,28 @@ terraform {
 provider "konnect" {
 }
 
-#resource "konnect_service" "S" {
-#  runtime_group_id = data.konnect_runtime_group.RG.id
-#  host = "mockbin.org"
-#  name = "TFTest"
-#}
+resource "konnect_service" "S" {
+  runtime_group_id = data.konnect_runtime_group.RG.id
+  host = "mockbin.org"
+  name = "TFTest"
+}
+
+resource "konnect_route" "R" {
+  runtime_group_id = data.konnect_runtime_group.RG.id
+  name = "TFRoute"
+  protocols = ["http"]
+  methods = ["GET"]
+  paths = ["/tf"]
+  service_id = konnect_service.S.service_id
+#  header {
+#    name = "shaw"
+#    values = ["value1", "value3"]
+#  }
+  header {
+    name = "sear"
+    values = ["kevin"]
+  }
+}
 
 #data "konnect_nodes" "Ns" {
 #  runtime_group_id = data.konnect_runtime_group.RG.id

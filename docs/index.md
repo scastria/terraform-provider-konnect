@@ -1,6 +1,9 @@
 # Kong Konnect Provider
 The Kong Konnect provider is used to interact with the Kong Konnect API.  The provider
 needs to be configured with the proper credentials before it can be used.
+
+This provider does NOT cover 100% of the Konnect API.  If there is something missing
+that you would like to be added, please submit an Issue in corresponding GitHub repo.
 ## Example Usage
 ```hcl
 terraform {

@@ -1,0 +1,51 @@
+---
+subcategory: "Runtime Configuration"
+---
+# Resource: konnect_route
+Represents a route within a runtime group
+## Example usage
+```hcl
+data "konnect_runtime_group" "RuntimeGroup" {
+  name = "TestRuntimeGroup"
+}
+resource "konnect_service" "Service" {
+  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  host = "mockbin.org"
+  name = "Test"
+}
+resource "konnect_route" "example" {
+  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  service_id = konnect_service.Service.service_id
+  name = "Test"
+  protocols = ["http"]
+  paths = ["/example"]
+  header {
+    name = "required-header"
+    values = ["required-header-values"]
+  }
+}
+```
+## Argument Reference
+* `runtime_group_id` - **(Required, String)** The id of the runtime group.
+* `service_id` - **(Optional, String)** The id of the service to forward traffic to.
+* `name` - **(Optional, String)** The name of the route.
+* `protocols` - **(Optional, List of String)** The protocols this route should allow. Allowed values: `http`, `hhtps`
+* `methods` - **(Optional, List of String)** The methods this route should allow. Allowed values: `GET`, `PUT`, `POST`, `PATCH`, `DELETE`, `OPTIONS`, `HEAD`, `CONNECT`, `TRACE`
+* `hosts` - **(Optional, List of String)** The hosts this route should allow.
+* `paths` - **(Optional, List of String)** The paths this route should allow.
+* `https_redirect_status_code` - **(Optional, Integer)** The status code Kong responds with when all properties of a Route match except the protocol. Allowed values: `426`, `301`, `302`, `307`, `308`. Default: `426`
+* `regex_priority` - **(Optional, Integer)** A number used to choose which route resolves a given request when several routes match it using regexes simultaneously. Default: `0`
+* `strip_path` - **(Optional, Boolean)** Whether to strip the matching prefix from the Service request. Default: `true`
+* `path_handling` - **(Optional, String)** Controls how the Service path, Route path and requested path are combined when sending a request to the upstream. Allowed values: `v0`, `v1`. Default: `v0`
+* `preserve_host` - **(Optional, Boolean)** Whether to use the request `Host` header during the Service request. Default: `false`
+* `request_buffering` - **(Optional, Boolean)** Whether to enable request body buffering. Default: `true`
+* `response_buffering` - **(Optional, Boolean)** Whether to enable response body buffering. Default: `true`
+* `header` - **(Optional, set{header})** Configuration block for a header.  Can be specified multiple times for each header.  Each block supports the fields documented below.
+### header
+* `name` - **(Required, String)** Name of header this route should require.
+* `values` - **(Required, List of String)** Allowed values this header should equal.
+## Attribute Reference
+* `id` - **(String)** Same as `runtime_group_id`:`route_id`
+* `route_id` - **(String)** Id of the route alone
+## Import
+Routes can be imported using a proper value of `id` as described above
