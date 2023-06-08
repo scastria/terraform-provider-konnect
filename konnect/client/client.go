@@ -31,15 +31,18 @@ const (
 )
 
 type Client struct {
-	pat        string
-	region     string
+	pat    string
+	region string
+	//defaultTags []string
 	httpClient *http.Client
 }
 
+// func NewClient(pat string, region string, defaultTags []string) (*Client, error) {
 func NewClient(pat string, region string) (*Client, error) {
 	c := &Client{
-		pat:        pat,
-		region:     region,
+		pat:    pat,
+		region: region,
+		//defaultTags: defaultTags,
 		httpClient: &http.Client{},
 	}
 	return c, nil

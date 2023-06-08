@@ -22,10 +22,6 @@ resource "konnect_route" "R" {
   methods = ["GET"]
   paths = ["/tf"]
   service_id = konnect_service.S.service_id
-#  header {
-#    name = "shaw"
-#    values = ["value1", "value3"]
-#  }
   header {
     name = "sear"
     values = ["kevin"]

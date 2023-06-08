@@ -22,6 +22,13 @@ func Provider() *schema.Provider {
 				DefaultFunc:  schema.EnvDefaultFunc("KONNECT_REGION", "us"),
 				ValidateFunc: validation.StringInSlice([]string{"us", "eu"}, false),
 			},
+			"default_tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group":          resourceRuntimeGroup(),
@@ -51,8 +58,14 @@ func Provider() *schema.Provider {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	pat := d.Get("pat").(string)
 	region := d.Get("region").(string)
+	//defaultTags := []string{}
+	//defaultTagsSet, ok := d.GetOk("default_tags")
+	//if ok {
+	//	defaultTags = convertSetToArray(defaultTagsSet.(*schema.Set))
+	//}
 
 	var diags diag.Diagnostics
+	//c, err := client.NewClient(pat, region, defaultTags)
 	c, err := client.NewClient(pat, region)
 	if err != nil {
 		return nil, diag.FromErr(err)
