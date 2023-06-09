@@ -9,6 +9,12 @@ terraform {
 provider "konnect" {
 }
 
+resource "konnect_consumer" "C" {
+  runtime_group_id = data.konnect_runtime_group.RG.id
+#  username = "Shawn"
+  custom_id = "Bob"
+}
+
 resource "konnect_service" "S" {
   runtime_group_id = data.konnect_runtime_group.RG.id
   host = "mockbin.org"

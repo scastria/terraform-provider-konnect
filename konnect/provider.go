@@ -22,13 +22,13 @@ func Provider() *schema.Provider {
 				DefaultFunc:  schema.EnvDefaultFunc("KONNECT_REGION", "us"),
 				ValidateFunc: validation.StringInSlice([]string{"us", "eu"}, false),
 			},
-			"default_tags": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
-			},
+			//"default_tags": {
+			//	Type:     schema.TypeSet,
+			//	Optional: true,
+			//	Elem: &schema.Schema{
+			//		Type: schema.TypeString,
+			//	},
+			//},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group":          resourceRuntimeGroup(),
@@ -41,6 +41,7 @@ func Provider() *schema.Provider {
 			"konnect_user_role":              resourceUserRole(),
 			"konnect_service":                resourceService(),
 			"konnect_route":                  resourceRoute(),
+			"konnect_consumer":               resourceConsumer(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),
