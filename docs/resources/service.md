@@ -25,7 +25,7 @@ resource "konnect_service" "example" {
 * `connect_timeout` - **(Optional, Integer)** The timeout in milliseconds for establishing a connection to the host. Default: `60000`
 * `read_timeout` - **(Optional, Integer)** The timeout in milliseconds between two successive read operations for transmitting a request to the host. Default: `60000`
 * `write_timeout` - **(Optional, Integer)** The timeout in milliseconds between two successive write operations for transmitting a request to the host. Default: `60000`
-* `enabled` - **(Optional, Boolean)** Whether the Service is active. Default: `true`
+* `enabled` - **(Optional, Boolean)** Whether the service is active. Default: `true`
 ## Attribute Reference
 * `id` - **(String)** Same as `runtime_group_id`:`service_id`
 * `service_id` - **(String)** Id of the service alone
