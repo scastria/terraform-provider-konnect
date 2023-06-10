@@ -9,30 +9,47 @@ terraform {
 provider "konnect" {
 }
 
-resource "konnect_consumer" "C" {
+resource "konnect_plugin" "P" {
   runtime_group_id = data.konnect_runtime_group.RG.id
+  name = "rate-limiting"
+  protocols = [
+    "grpc",
+    "grpcs",
+    "http",
+    "https"
+  ]
+  config_json = <<EOF
+{
+  "minute": 8,
+  "second": 7
+}
+EOF
+}
+
+#resource "konnect_consumer" "C" {
+#  runtime_group_id = data.konnect_runtime_group.RG.id
 #  username = "Shawn"
-  custom_id = "Bob"
-}
+#  custom_id = "Bob"
+#}
 
-resource "konnect_service" "S" {
-  runtime_group_id = data.konnect_runtime_group.RG.id
-  host = "mockbin.org"
-  name = "TFTest"
-}
+#resource "konnect_service" "S" {
+#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  host = "mockbin.org"
+#  name = "TFTest"
+#}
 
-resource "konnect_route" "R" {
-  runtime_group_id = data.konnect_runtime_group.RG.id
-  name = "TFRoute"
-  protocols = ["http"]
-  methods = ["GET"]
-  paths = ["/tf"]
-  service_id = konnect_service.S.service_id
-  header {
-    name = "sear"
-    values = ["kevin"]
-  }
-}
+#resource "konnect_route" "R" {
+#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  name = "TFRoute"
+#  protocols = ["http"]
+#  methods = ["GET"]
+#  paths = ["/tf"]
+#  service_id = konnect_service.S.service_id
+#  header {
+#    name = "sear"
+#    values = ["kevin"]
+#  }
+#}
 
 #data "konnect_nodes" "Ns" {
 #  runtime_group_id = data.konnect_runtime_group.RG.id

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"strings"
 )
 
 const (
@@ -29,6 +30,10 @@ const (
 	FilterEntityTypeName         = "filter[entity_type_name]"
 	FilterEntityTypeNameContains = "filter[entity_type_name][contains]"
 )
+
+type EntityId struct {
+	Id string `json:"id"`
+}
 
 type Client struct {
 	pat    string
@@ -104,5 +109,10 @@ func (c *Client) RequestPath(isRegion bool, path string) string {
 	} else {
 		host = GlobalRegion
 	}
-	return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
+	//Hack for plugin schemas until Konnect API is fixed
+	if strings.Contains(path, "schemas") {
+		return fmt.Sprintf("https://%s.%s/konnect-api/api/%s", host, KonnectDomain, path)
+	} else {
+		return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
+	}
 }

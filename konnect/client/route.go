@@ -23,10 +23,7 @@ type Route struct {
 	PreserveHost            bool                `json:"preserve_host"`
 	RequestBuffering        bool                `json:"request_buffering"`
 	ResponseBuffering       bool                `json:"response_buffering"`
-	Service                 *ServiceId          `json:"service,omitempty"`
-}
-type ServiceId struct {
-	Id string `json:"id"`
+	Service                 *EntityId           `json:"service,omitempty"`
 }
 type RouteCollection struct {
 	Routes []Route `json:"data"`

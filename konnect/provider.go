@@ -42,6 +42,7 @@ func Provider() *schema.Provider {
 			"konnect_service":                resourceService(),
 			"konnect_route":                  resourceRoute(),
 			"konnect_consumer":               resourceConsumer(),
+			"konnect_plugin":                 resourcePlugin(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_runtime_group": dataSourceRuntimeGroup(),

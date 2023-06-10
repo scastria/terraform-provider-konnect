@@ -169,7 +169,7 @@ func fillRoute(c *client.Route, d *schema.ResourceData) {
 	}
 	service, ok := d.GetOk("service_id")
 	if ok {
-		c.Service = &client.ServiceId{}
+		c.Service = &client.EntityId{}
 		c.Service.Id = service.(string)
 	}
 	konnectHeaders, ok := d.GetOk("header")
@@ -249,8 +249,8 @@ func resourceRouteCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	d.SetId(retVal.RouteEncodeId())
 	retVal.RuntimeGroupId = newRoute.RuntimeGroupId
+	d.SetId(retVal.RouteEncodeId())
 	fillResourceDataFromRoute(retVal, d)
 	return diags
 }
