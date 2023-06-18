@@ -63,15 +63,16 @@ func resourceAuthenticationSettingsCreate(ctx context.Context, d *schema.Resourc
 		d.SetId("")
 		return diag.FromErr(err)
 	}
+	d.SetId(client.AuthenticationSettingsId)
 	return diags
 }
 
 func resourceAuthenticationSettingsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
-	if d.Id() != client.AuthenticationSettingsPath {
+	if d.Id() != client.AuthenticationSettingsId {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("Id must be equal to %s", client.AuthenticationSettingsPath))
+		return diag.FromErr(fmt.Errorf("Id must be equal to %s", client.AuthenticationSettingsId))
 	}
 	requestPath := fmt.Sprintf(client.AuthenticationSettingsPath)
 	body, err := c.HttpRequest(ctx, false, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})

@@ -123,15 +123,16 @@ func resourceIdentityProviderCreate(ctx context.Context, d *schema.ResourceData,
 		d.SetId("")
 		return diag.FromErr(err)
 	}
+	d.SetId(client.IdentityProviderId)
 	return diags
 }
 
 func resourceIdentityProviderRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
-	if d.Id() != client.IdentityProviderPath {
+	if d.Id() != client.IdentityProviderId {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("Id must be equal to %s", client.IdentityProviderPath))
+		return diag.FromErr(fmt.Errorf("Id must be equal to %s", client.IdentityProviderId))
 	}
 	requestPath := fmt.Sprintf(client.IdentityProviderPath)
 	body, err := c.HttpRequest(ctx, false, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})

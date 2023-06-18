@@ -38,6 +38,7 @@ func Provider() *schema.Provider {
 			"konnect_team":                    resourceTeam(),
 			"konnect_team_user":               resourceTeamUser(),
 			"konnect_team_role":               resourceTeamRole(),
+			"konnect_team_mappings":           resourceTeamMappings(),
 			"konnect_user_role":               resourceUserRole(),
 			"konnect_service":                 resourceService(),
 			"konnect_route":                   resourceRoute(),
