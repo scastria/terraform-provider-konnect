@@ -34,6 +34,11 @@ func resourceIdentityProvider() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"client_secret": {
+				Type:      schema.TypeString,
+				Optional:  true,
+				Sensitive: true,
+			},
 			"scopes": {
 				Type:     schema.TypeSet,
 				Optional: true,
@@ -70,6 +75,10 @@ func fillIdentityProvider(c *client.IdentityProvider, d *schema.ResourceData) {
 	if ok {
 		c.ClientId = clientId.(string)
 	}
+	clientSecret, ok := d.GetOk("client_secret")
+	if ok {
+		c.ClientSecret = clientSecret.(string)
+	}
 	scopes, ok := d.GetOk("scopes")
 	if ok {
 		c.Scopes = convertSetToArray(scopes.(*schema.Set))
@@ -93,6 +102,8 @@ func fillResourceDataFromIdentityProvider(c *client.IdentityProvider, d *schema.
 	d.Set("issuer", c.Issuer)
 	d.Set("login_path", c.LoginPath)
 	d.Set("client_id", c.ClientId)
+	//Do not set client_secret in state since it can never be read back.  Let previous value propagate forward for No Changes
+	//d.Set("client_secret", c.ClientSecret)
 	d.Set("scopes", c.Scopes)
 	if c.ClaimMappings == nil {
 		d.Set("email_claim_mapping", "")

@@ -8,6 +8,7 @@ Represents identity provider settings
 resource "konnect_identity_provider" "example" {
   issuer = "https://example.com"
   client_id = "XXXX"
+  client_secret = "YYYY"
   login_path = "login"
   scopes = [
     "email",
@@ -22,6 +23,7 @@ resource "konnect_identity_provider" "example" {
 ## Argument Reference
 * `issuer` - **(Optional, String)** Issuer of the identity provider.
 * `client_id` - **(Optional, String)** Client ID of the identity provider.
+* `client_secret` - **(Optional, String, Sensitive)** Client secret of the identity provider.
 * `login_path` - **(Optional, String)** Login path of the identity provider.
 * `scopes` - **(Optional, List of String)** Scopes of the identity provider.
 * `email_claim_mapping` - **(Optional, String)** Claim to map email for the identity provider.
