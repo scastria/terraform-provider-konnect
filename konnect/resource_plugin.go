@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-http-utils/headers"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
@@ -125,7 +126,7 @@ func fillPlugin(c *client.Plugin, d *schema.ResourceData) {
 	}
 }
 
-func fillResourceDataFromPlugin(c *client.Plugin, d *schema.ResourceData, pluginSchema *client.PluginSchema) {
+func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema.ResourceData, pluginSchema *client.PluginSchema) {
 	var configSchema []map[string]client.PluginField
 	configSchema = nil
 	for _, value := range pluginSchema.Fields {
@@ -162,7 +163,7 @@ func fillResourceDataFromPlugin(c *client.Plugin, d *schema.ResourceData, plugin
 			for fieldKey, field := range fieldConfig {
 				configValue, ok := c.Config[fieldKey]
 				if ok {
-					if configValue == field.Default {
+					if areConfigValuesEqual(ctx, fieldKey, configValue, field.Default) {
 						delete(c.Config, fieldKey)
 					}
 				}
@@ -173,6 +174,19 @@ func fillResourceDataFromPlugin(c *client.Plugin, d *schema.ResourceData, plugin
 	d.Set("config_json", string(bytes[:]))
 	bytes, _ = json.Marshal(c.ConfigAll)
 	d.Set("config_all_json", string(bytes[:]))
+}
+
+func areConfigValuesEqual(ctx context.Context, key string, configValue interface{}, schemaDefault interface{}) bool {
+	configValueJSON, _ := json.Marshal(configValue)
+	configValueString := string(configValueJSON[:])
+	schemaFieldDefaultJSON, _ := json.Marshal(schemaDefault)
+	schemaFieldString := string(schemaFieldDefaultJSON[:])
+	tflog.Info(ctx, "Comparing config:", map[string]any{
+		"key":         key,
+		"configValue": configValueString,
+		"schemaValue": schemaFieldString,
+	})
+	return configValueString == schemaFieldString
 }
 
 func getPluginSchema(ctx context.Context, c *client.Client, runtimeGroupId string, pluginName string) (*client.PluginSchema, error) {
@@ -223,7 +237,7 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	retVal.ConfigAll = copyMap(retVal.Config)
 	retVal.RuntimeGroupId = newPlugin.RuntimeGroupId
 	d.SetId(retVal.PluginEncodeId())
-	fillResourceDataFromPlugin(retVal, d, pluginSchema)
+	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
 }
 
@@ -254,7 +268,7 @@ func resourcePluginRead(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	retVal.ConfigAll = copyMap(retVal.Config)
 	retVal.RuntimeGroupId = runtimeGroupId
-	fillResourceDataFromPlugin(retVal, d, pluginSchema)
+	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
 }
 
@@ -288,7 +302,7 @@ func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	retVal.ConfigAll = copyMap(retVal.Config)
 	retVal.RuntimeGroupId = runtimeGroupId
-	fillResourceDataFromPlugin(retVal, d, pluginSchema)
+	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
 }
 
