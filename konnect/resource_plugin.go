@@ -127,6 +127,7 @@ func fillPlugin(c *client.Plugin, d *schema.ResourceData) {
 }
 
 func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema.ResourceData, pluginSchema *client.PluginSchema) {
+	// Grab just the schema for config parameter from plugin schema
 	var configSchema []map[string]client.PluginField
 	configSchema = nil
 	for _, value := range pluginSchema.Fields {
@@ -159,21 +160,33 @@ func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema
 	d.Set("plugin_id", c.Id)
 	// Remove all default values from config based on plugin schema
 	if configSchema != nil {
-		for _, fieldConfig := range configSchema {
-			for fieldKey, field := range fieldConfig {
-				configValue, ok := c.Config[fieldKey]
-				if ok {
-					if areConfigValuesEqual(ctx, fieldKey, configValue, field.Default) {
-						delete(c.Config, fieldKey)
-					}
-				}
-			}
-		}
+		pruneConfigValues(ctx, c.Config, configSchema)
 	}
 	bytes, _ := json.Marshal(c.Config)
 	d.Set("config_json", string(bytes[:]))
 	bytes, _ = json.Marshal(c.ConfigAll)
 	d.Set("config_all_json", string(bytes[:]))
+}
+
+func pruneConfigValues(ctx context.Context, config map[string]interface{}, configSchema []map[string]client.PluginField) {
+	for _, fieldConfig := range configSchema {
+		for fieldKey, field := range fieldConfig {
+			configValue, ok := config[fieldKey]
+			if ok {
+				// If field type is record, then recurse
+				if field.Type == "record" {
+					childConfigValue := configValue.(map[string]interface{})
+					pruneConfigValues(ctx, childConfigValue, field.Fields)
+					// If all fields of child config are defaults, then remove entire child config from parent
+					if len(childConfigValue) == 0 {
+						delete(config, fieldKey)
+					}
+				} else if areConfigValuesEqual(ctx, fieldKey, configValue, field.Default) {
+					delete(config, fieldKey)
+				}
+			}
+		}
+	}
 }
 
 func areConfigValuesEqual(ctx context.Context, key string, configValue interface{}, schemaDefault interface{}) bool {
