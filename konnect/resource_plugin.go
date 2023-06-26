@@ -247,7 +247,7 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal.ConfigAll = copyMap(retVal.Config)
+	retVal.ConfigAll = copyMapByJSON(retVal.Config)
 	retVal.RuntimeGroupId = newPlugin.RuntimeGroupId
 	d.SetId(retVal.PluginEncodeId())
 	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
@@ -279,7 +279,7 @@ func resourcePluginRead(ctx context.Context, d *schema.ResourceData, m interface
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal.ConfigAll = copyMap(retVal.Config)
+	retVal.ConfigAll = copyMapByJSON(retVal.Config)
 	retVal.RuntimeGroupId = runtimeGroupId
 	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
@@ -313,7 +313,7 @@ func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	retVal.ConfigAll = copyMap(retVal.Config)
+	retVal.ConfigAll = copyMapByJSON(retVal.Config)
 	retVal.RuntimeGroupId = runtimeGroupId
 	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags

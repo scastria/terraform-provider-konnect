@@ -1,6 +1,7 @@
 package konnect
 
 import (
+	"encoding/json"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"reflect"
 )
@@ -39,10 +40,9 @@ func removeNulls(m map[string]interface{}) {
 	}
 }
 
-func copyMap[K string, V interface{}](m map[K]V) map[K]V {
+func copyMapByJSON[K string, V interface{}](m map[K]V) map[K]V {
+	bytes, _ := json.Marshal(m)
 	result := make(map[K]V)
-	for k, v := range m {
-		result[k] = v
-	}
+	json.Unmarshal(bytes, &result)
 	return result
 }
