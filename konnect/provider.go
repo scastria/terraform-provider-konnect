@@ -53,6 +53,7 @@ func Provider() *schema.Provider {
 			"konnect_team_role":     dataSourceTeamRole(),
 			"konnect_user_role":     dataSourceUserRole(),
 			"konnect_nodes":         dataSourceNodes(),
+			"konnect_consumer":      dataSourceConsumer(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

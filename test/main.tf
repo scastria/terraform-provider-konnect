@@ -9,22 +9,22 @@ terraform {
 provider "konnect" {
 }
 
-resource "konnect_plugin" "P" {
-  runtime_group_id = data.konnect_runtime_group.RG.id
-  name = "rate-limiting"
-  protocols = [
-    "grpc",
-    "grpcs",
-    "http",
-    "https"
-  ]
-  config_json = <<EOF
-{
-  "minute": 8,
-  "second": 7
-}
-EOF
-}
+#resource "konnect_plugin" "P" {
+#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  name = "rate-limiting"
+#  protocols = [
+#    "grpc",
+#    "grpcs",
+#    "http",
+#    "https"
+#  ]
+#  config_json = <<EOF
+#{
+#  "minute": 8,
+#  "second": 7
+#}
+#EOF
+#}
 
 #resource "konnect_consumer" "C" {
 #  runtime_group_id = data.konnect_runtime_group.RG.id
@@ -133,4 +133,10 @@ EOF
 
 data "konnect_runtime_group" "RG" {
   name = "development"
+}
+
+data "konnect_consumer" "C" {
+  runtime_group_id = data.konnect_runtime_group.RG.id
+  search_username = "a"
+#  search_custom_id = null
 }
