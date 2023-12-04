@@ -3,8 +3,9 @@ package client
 import "strings"
 
 const (
-	PluginPath       = RuntimeGroupPathGet + "/core-entities/plugins"
-	PluginPathGet    = PluginPath + "/%s"
+	PluginPath    = RuntimeGroupPathGet + "/core-entities/plugins"
+	PluginPathGet = PluginPath + "/%s"
+	// TODO: Fix this endpoint path to updated value
 	PluginSchemaPath = "runtime_groups/%s/schemas/plugins/%s"
 )
 

@@ -29,7 +29,7 @@ resource "konnect_route" "example" {
 * `runtime_group_id` - **(Required, String)** The id of the runtime group.
 * `service_id` - **(Optional, String)** The id of the service to forward traffic to.
 * `name` - **(Optional, String)** The name of the route.
-* `protocols` - **(Optional, List of String)** The protocols this route should allow. Allowed values: `http`, `hhtps`
+* `protocols` - **(Optional, List of String)** The protocols this route should allow. Allowed values: `http`, `https`
 * `methods` - **(Optional, List of String)** The methods this route should allow. Allowed values: `GET`, `PUT`, `POST`, `PATCH`, `DELETE`, `OPTIONS`, `HEAD`, `CONNECT`, `TRACE`
 * `hosts` - **(Optional, List of String)** The hosts this route should allow.
 * `paths` - **(Optional, List of String)** The paths this route should allow.
