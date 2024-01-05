@@ -140,3 +140,14 @@ data "konnect_consumer" "C" {
   search_username = "web"
 #  search_custom_id = null
 }
+
+#resource "konnect_consumer_key" "CK" {
+#  control_plane_id = data.konnect_control_plane.RG.id
+#  consumer_id = data.konnect_consumer.C.consumer_id
+#  key = "shawn"
+#}
+#resource "konnect_consumer_acl" "CACL" {
+#  control_plane_id = data.konnect_control_plane.RG.id
+#  consumer_id = data.konnect_consumer.C.consumer_id
+#  group = "shawn2"
+#}
