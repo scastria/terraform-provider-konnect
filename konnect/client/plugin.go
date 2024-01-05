@@ -3,14 +3,14 @@ package client
 import "strings"
 
 const (
-	PluginPath    = RuntimeGroupPathGet + "/core-entities/plugins"
+	PluginPath    = ControlPlanePathGet + "/core-entities/plugins"
 	PluginPathGet = PluginPath + "/%s"
 	// TODO: Fix this endpoint path to updated value
-	PluginSchemaPath = "runtime_groups/%s/schemas/plugins/%s"
+	PluginSchemaPath = "control_planes/%s/schemas/plugins/%s"
 )
 
 type Plugin struct {
-	RuntimeGroupId string                 `json:"-"`
+	ControlPlaneId string                 `json:"-"`
 	Id             string                 `json:"id"`
 	Name           string                 `json:"name"`
 	InstanceName   string                 `json:"instance_name"`
@@ -35,7 +35,7 @@ type PluginField struct {
 }
 
 func (s *Plugin) PluginEncodeId() string {
-	return s.RuntimeGroupId + IdSeparator + s.Id
+	return s.ControlPlaneId + IdSeparator + s.Id
 }
 
 func PluginDecodeId(s string) (string, string) {

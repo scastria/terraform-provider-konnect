@@ -3,12 +3,12 @@ package client
 import "strings"
 
 const (
-	RoutePath    = RuntimeGroupPathGet + "/core-entities/routes"
+	RoutePath    = ControlPlanePathGet + "/core-entities/routes"
 	RoutePathGet = RoutePath + "/%s"
 )
 
 type Route struct {
-	RuntimeGroupId          string              `json:"-"`
+	ControlPlaneId          string              `json:"-"`
 	Id                      string              `json:"id"`
 	Name                    string              `json:"name"`
 	Protocols               []string            `json:"protocols"`
@@ -30,7 +30,7 @@ type RouteCollection struct {
 }
 
 func (s *Route) RouteEncodeId() string {
-	return s.RuntimeGroupId + IdSeparator + s.Id
+	return s.ControlPlaneId + IdSeparator + s.Id
 }
 
 func RouteDecodeId(s string) (string, string) {

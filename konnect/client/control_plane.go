@@ -1,21 +1,21 @@
 package client
 
 const (
-	RuntimeGroupPath    = "runtime-groups"
-	RuntimeGroupPathGet = RuntimeGroupPath + "/%s"
+	ControlPlanePath    = "control-planes"
+	ControlPlanePathGet = ControlPlanePath + "/%s"
 )
 
-type RuntimeGroup struct {
+type ControlPlane struct {
 	Id          string              `json:"id,omitempty"`
 	Name        string              `json:"name,omitempty"`
 	Description string              `json:"description"`
-	Config      *RuntimeGroupConfig `json:"config,omitempty"`
+	Config      *ControlPlaneConfig `json:"config,omitempty"`
 }
-type RuntimeGroupConfig struct {
+type ControlPlaneConfig struct {
 	ClusterType          string `json:"cluster_type,omitempty"`
 	ControlPlaneEndpoint string `json:"control_plane_endpoint,omitempty"`
 	TelemetryEndpoint    string `json:"telemetry_endpoint,omitempty"`
 }
-type RuntimeGroupCollection struct {
-	RuntimeGroups []RuntimeGroup `json:"data"`
+type ControlPlaneCollection struct {
+	ControlPlanes []ControlPlane `json:"data"`
 }

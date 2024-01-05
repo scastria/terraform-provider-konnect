@@ -16,7 +16,7 @@ func dataSourceConsumer() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceConsumerRead,
 		Schema: map[string]*schema.Schema{
-			"runtime_group_id": {
+			"control_plane_id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -48,8 +48,8 @@ func dataSourceConsumerRead(ctx context.Context, d *schema.ResourceData, m inter
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	//consumers do not support searching and filtering so do it manually after reading all consumers
-	runtimeGroupId := d.Get("runtime_group_id").(string)
-	requestPath := fmt.Sprintf(client.ConsumerPath, runtimeGroupId)
+	controlPlaneId := d.Get("control_plane_id").(string)
+	requestPath := fmt.Sprintf(client.ConsumerPath, controlPlaneId)
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
@@ -121,8 +121,8 @@ func dataSourceConsumerRead(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(fmt.Errorf("No consumer exists with that filter criteria"))
 	}
 	retVal := retVals.Consumers[0]
-	retVal.RuntimeGroupId = runtimeGroupId
-	d.Set("runtime_group_id", retVal.RuntimeGroupId)
+	retVal.ControlPlaneId = controlPlaneId
+	d.Set("control_plane_id", retVal.ControlPlaneId)
 	d.Set("username", retVal.Username)
 	d.Set("custom_id", retVal.CustomId)
 	d.Set("consumer_id", retVal.Id)

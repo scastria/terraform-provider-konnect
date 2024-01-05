@@ -3,12 +3,12 @@ package client
 import "strings"
 
 const (
-	ServicePath    = RuntimeGroupPathGet + "/core-entities/services"
+	ServicePath    = ControlPlanePathGet + "/core-entities/services"
 	ServicePathGet = ServicePath + "/%s"
 )
 
 type Service struct {
-	RuntimeGroupId string `json:"-"`
+	ControlPlaneId string `json:"-"`
 	Id             string `json:"id"`
 	Name           string `json:"name"`
 	Retries        int    `json:"retries"`
@@ -26,7 +26,7 @@ type ServiceCollection struct {
 }
 
 func (s *Service) ServiceEncodeId() string {
-	return s.RuntimeGroupId + IdSeparator + s.Id
+	return s.ControlPlaneId + IdSeparator + s.Id
 }
 
 func ServiceDecodeId(s string) (string, string) {

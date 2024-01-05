@@ -36,7 +36,7 @@ func dataSourceUserRole() *schema.Resource {
 			"entity_type_display_name": {
 				Type:         schema.TypeString,
 				Optional:     true,
-				ValidateFunc: validation.StringInSlice([]string{client.RuntimeGroupsDisplayName, client.ServicesDisplayName}, false),
+				ValidateFunc: validation.StringInSlice([]string{client.ControlPlanesDisplayName, client.ServicesDisplayName}, false),
 			},
 			"entity_id": {
 				Type:     schema.TypeString,

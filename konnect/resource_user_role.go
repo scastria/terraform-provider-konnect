@@ -36,7 +36,7 @@ func resourceUserRole() *schema.Resource {
 				Type:         schema.TypeString,
 				Required:     true,
 				ForceNew:     true,
-				ValidateFunc: validation.StringInSlice([]string{client.RuntimeGroupsDisplayName, client.ServicesDisplayName}, false),
+				ValidateFunc: validation.StringInSlice([]string{client.ControlPlanesDisplayName, client.ServicesDisplayName}, false),
 			},
 			"entity_id": {
 				Type:     schema.TypeString,

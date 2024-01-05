@@ -2,7 +2,7 @@ package client
 
 const (
 	RolePath                 = "roles"
-	RuntimeGroupsDisplayName = "Runtime Groups"
+	ControlPlanesDisplayName = "Control Planes"
 	ServicesDisplayName      = "Services"
 )
 

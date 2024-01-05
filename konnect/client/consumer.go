@@ -3,12 +3,12 @@ package client
 import "strings"
 
 const (
-	ConsumerPath    = RuntimeGroupPathGet + "/core-entities/consumers"
+	ConsumerPath    = ControlPlanePathGet + "/core-entities/consumers"
 	ConsumerPathGet = ConsumerPath + "/%s"
 )
 
 type Consumer struct {
-	RuntimeGroupId string `json:"-"`
+	ControlPlaneId string `json:"-"`
 	Id             string `json:"id"`
 	Username       string `json:"username"`
 	CustomId       string `json:"custom_id"`
@@ -18,7 +18,7 @@ type ConsumerCollection struct {
 }
 
 func (c *Consumer) ConsumerEncodeId() string {
-	return c.RuntimeGroupId + IdSeparator + c.Id
+	return c.ControlPlaneId + IdSeparator + c.Id
 }
 
 func ConsumerDecodeId(s string) (string, string) {

@@ -12,9 +12,9 @@ import (
 	"net/url"
 )
 
-func dataSourceRuntimeGroup() *schema.Resource {
+func dataSourceControlPlane() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: dataSourceRuntimeGroupRead,
+		ReadContext: dataSourceControlPlaneRead,
 		Schema: map[string]*schema.Schema{
 			"search_name": {
 				Type:     schema.TypeString,
@@ -44,7 +44,7 @@ func dataSourceRuntimeGroup() *schema.Resource {
 	}
 }
 
-func dataSourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func dataSourceControlPlaneRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	requestQuery := url.Values{}
@@ -56,26 +56,26 @@ func dataSourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m i
 	if ok {
 		requestQuery[client.FilterName] = []string{name.(string)}
 	}
-	body, err := c.HttpRequest(ctx, true, http.MethodGet, client.RuntimeGroupPath, requestQuery, nil, &bytes.Buffer{})
+	body, err := c.HttpRequest(ctx, true, http.MethodGet, client.ControlPlanePath, requestQuery, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVals := &client.RuntimeGroupCollection{}
+	retVals := &client.ControlPlaneCollection{}
 	err = json.NewDecoder(body).Decode(retVals)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	numRuntimeGroups := len(retVals.RuntimeGroups)
-	if numRuntimeGroups > 1 {
+	numControlPlanes := len(retVals.ControlPlanes)
+	if numControlPlanes > 1 {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("Filter criteria does not result in a single runtime group"))
-	} else if numRuntimeGroups != 1 {
+		return diag.FromErr(fmt.Errorf("Filter criteria does not result in a single control plane"))
+	} else if numControlPlanes != 1 {
 		d.SetId("")
-		return diag.FromErr(fmt.Errorf("No runtime group exists with that filter criteria"))
+		return diag.FromErr(fmt.Errorf("No control plane exists with that filter criteria"))
 	}
-	retVal := retVals.RuntimeGroups[0]
+	retVal := retVals.ControlPlanes[0]
 	d.Set("name", retVal.Name)
 	d.Set("description", retVal.Description)
 	d.Set("cluster_type", retVal.Config.ClusterType)

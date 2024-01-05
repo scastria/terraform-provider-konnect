@@ -14,12 +14,12 @@ import (
 	"net/http"
 )
 
-func resourceRuntimeGroup() *schema.Resource {
+func resourceControlPlane() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceRuntimeGroupCreate,
-		ReadContext:   resourceRuntimeGroupRead,
-		UpdateContext: resourceRuntimeGroupUpdate,
-		DeleteContext: resourceRuntimeGroupDelete,
+		CreateContext: resourceControlPlaneCreate,
+		ReadContext:   resourceControlPlaneRead,
+		UpdateContext: resourceControlPlaneUpdate,
+		DeleteContext: resourceControlPlaneDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -49,7 +49,7 @@ func resourceRuntimeGroup() *schema.Resource {
 	}
 }
 
-func fillRuntimeGroup(c *client.RuntimeGroup, d *schema.ResourceData) {
+func fillControlPlane(c *client.ControlPlane, d *schema.ResourceData) {
 	c.Name = d.Get("name").(string)
 	description, ok := d.GetOk("description")
 	if ok {
@@ -57,7 +57,7 @@ func fillRuntimeGroup(c *client.RuntimeGroup, d *schema.ResourceData) {
 	}
 }
 
-func fillResourceDataFromRuntimeGroup(c *client.RuntimeGroup, d *schema.ResourceData) {
+func fillResourceDataFromControlPlane(c *client.ControlPlane, d *schema.ResourceData) {
 	d.Set("name", c.Name)
 	d.Set("description", c.Description)
 	d.Set("cluster_type", c.Config.ClusterType)
@@ -65,18 +65,18 @@ func fillResourceDataFromRuntimeGroup(c *client.RuntimeGroup, d *schema.Resource
 	d.Set("telemetry_endpoint", c.Config.TelemetryEndpoint)
 }
 
-func resourceRuntimeGroupCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceControlPlaneCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	newRuntimeGroup := client.RuntimeGroup{}
-	fillRuntimeGroup(&newRuntimeGroup, d)
-	err := json.NewEncoder(&buf).Encode(newRuntimeGroup)
+	newControlPlane := client.ControlPlane{}
+	fillControlPlane(&newControlPlane, d)
+	err := json.NewEncoder(&buf).Encode(newControlPlane)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.RuntimeGroupPath)
+	requestPath := fmt.Sprintf(client.ControlPlanePath)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -85,21 +85,21 @@ func resourceRuntimeGroupCreate(ctx context.Context, d *schema.ResourceData, m i
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal := &client.RuntimeGroup{}
+	retVal := &client.ControlPlane{}
 	err = json.NewDecoder(body).Decode(retVal)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 	d.SetId(retVal.Id)
-	fillResourceDataFromRuntimeGroup(retVal, d)
+	fillResourceDataFromControlPlane(retVal, d)
 	return diags
 }
 
-func resourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceControlPlaneRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.RuntimeGroupPathGet, d.Id())
+	requestPath := fmt.Sprintf(client.ControlPlanePathGet, d.Id())
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
@@ -109,27 +109,27 @@ func resourceRuntimeGroupRead(ctx context.Context, d *schema.ResourceData, m int
 		}
 		return diag.FromErr(err)
 	}
-	retVal := &client.RuntimeGroup{}
+	retVal := &client.ControlPlane{}
 	err = json.NewDecoder(body).Decode(retVal)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	fillResourceDataFromRuntimeGroup(retVal, d)
+	fillResourceDataFromControlPlane(retVal, d)
 	return diags
 }
 
-func resourceRuntimeGroupUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceControlPlaneUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	upRuntimeGroup := client.RuntimeGroup{}
-	fillRuntimeGroup(&upRuntimeGroup, d)
-	err := json.NewEncoder(&buf).Encode(upRuntimeGroup)
+	upControlPlane := client.ControlPlane{}
+	fillControlPlane(&upControlPlane, d)
+	err := json.NewEncoder(&buf).Encode(upControlPlane)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.RuntimeGroupPathGet, d.Id())
+	requestPath := fmt.Sprintf(client.ControlPlanePathGet, d.Id())
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -137,19 +137,19 @@ func resourceRuntimeGroupUpdate(ctx context.Context, d *schema.ResourceData, m i
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	retVal := &client.RuntimeGroup{}
+	retVal := &client.ControlPlane{}
 	err = json.NewDecoder(body).Decode(retVal)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	fillResourceDataFromRuntimeGroup(retVal, d)
+	fillResourceDataFromControlPlane(retVal, d)
 	return diags
 }
 
-func resourceRuntimeGroupDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceControlPlaneDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.RuntimeGroupPathGet, d.Id())
+	requestPath := fmt.Sprintf(client.ControlPlanePathGet, d.Id())
 	_, err := c.HttpRequest(ctx, true, http.MethodDelete, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		return diag.FromErr(err)

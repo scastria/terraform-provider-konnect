@@ -10,7 +10,7 @@ provider "konnect" {
 }
 
 #resource "konnect_plugin" "P" {
-#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  control_plane_id = data.konnect_control_plane.RG.id
 #  name = "rate-limiting"
 #  protocols = [
 #    "grpc",
@@ -27,19 +27,19 @@ provider "konnect" {
 #}
 
 #resource "konnect_consumer" "C" {
-#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  control_plane_id = data.konnect_control_plane.RG.id
 #  username = "Shawn"
 #  custom_id = "Bob"
 #}
 
 #resource "konnect_service" "S" {
-#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  control_plane_id = data.konnect_control_plane.RG.id
 #  host = "mockbin.org"
 #  name = "TFTest"
 #}
 
 #resource "konnect_route" "R" {
-#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  control_plane_id = data.konnect_control_plane.RG.id
 #  name = "TFRoute"
 #  protocols = ["http"]
 #  methods = ["GET"]
@@ -52,24 +52,24 @@ provider "konnect" {
 #}
 
 #data "konnect_nodes" "Ns" {
-#  runtime_group_id = data.konnect_runtime_group.RG.id
+#  control_plane_id = data.konnect_control_plane.RG.id
 #}
 
 #resource "konnect_user_role" "UR" {
 #  user_id = data.konnect_user.U.id
-#  entity_id = data.konnect_runtime_group.RG.id
-#  entity_type_display_name = "Runtime Groups"
+#  entity_id = data.konnect_control_plane.RG.id
+#  entity_type_display_name = "Control Planes"
 #  entity_region = "us"
 #  role_display_name = data.konnect_role.R.display_name
 #}
 
 #data "konnect_team_role" "TR" {
 #  team_id = data.konnect_team.T.id
-#  entity_type_display_name = "Runtime Groups"
+#  entity_type_display_name = "Control Planes"
 #}
 
 #data "konnect_role" "R" {
-#  group_display_name = "Runtime Groups"
+#  group_display_name = "Control Planes"
 #  display_name = "Admin"
 #}
 
@@ -80,8 +80,8 @@ provider "konnect" {
 
 #resource "konnect_team_role" "TR" {
 #  team_id = konnect_team.T.id
-#  entity_id = konnect_runtime_group.RG.id
-#  entity_type_display_name = "Runtime Groups"
+#  entity_id = konnect_control_plane.RG.id
+#  entity_type_display_name = "Control Planes"
 #  entity_region = "us"
 #  role_display_name = data.konnect_role.R.display_name
 #}
@@ -126,17 +126,17 @@ provider "konnect" {
 #  konnect_mapping_enabled = true
 #}
 
-#resource "konnect_runtime_group" "RG" {
+#resource "konnect_control_plane" "RG" {
 #  name = "ShawnRG"
 #  description = "testing"
 #}
 
-data "konnect_runtime_group" "RG" {
+data "konnect_control_plane" "RG" {
   name = "development"
 }
 
 data "konnect_consumer" "C" {
-  runtime_group_id = data.konnect_runtime_group.RG.id
-  search_username = "a"
+  control_plane_id = data.konnect_control_plane.RG.id
+  search_username = "web"
 #  search_custom_id = null
 }

@@ -2,21 +2,21 @@
 subcategory: "Runtime Configuration"
 ---
 # Data Source: konnect_nodes
-Represents all nodes of a runtime group
+Represents all nodes of a control plane
 ## Example usage
 ```hcl
-data "konnect_runtime_group" "RuntimeGroup" {
-  name = "TestRuntimeGroup"
+data "konnect_control_plane" "ControlPlane" {
+  name = "TestControlPlane"
 }
 data "konnect_nodes" "example" {
-  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  control_plane_id = data.konnect_control_plane.ControlPlane.id
 }
 ```
 ## Argument Reference
-* `runtime_group_id` - **(Required, String)** The id of the parent runtime group.
+* `control_plane_id` - **(Required, String)** The id of the parent control plane.
 ## Attribute Reference
-* `id` - **(String)** Same as `runtime_group_id`
-* `nodes` - **(set{node})** Set of nodes belonging to runtime group
+* `id` - **(String)** Same as `control_plane_id`
+* `nodes` - **(set{node})** Set of nodes belonging to control plane
 ### node
 * `id` - **(String)** Id of node.
 * `version` - **(String)** Version of node.
@@ -24,4 +24,4 @@ data "konnect_nodes" "example" {
 * `last_ping` - **(Integer)** Last time of ping of node.
 * `type` - **(String)** Type of node.
 * `config_hash` - **(String)** Hash of the current configuration state of node.
-* `data_plane_cert_id` - **(String)** Id of certificate used in communication between node and runtime group.
+* `data_plane_cert_id` - **(String)** Id of certificate used in communication between node and control plane.

@@ -31,7 +31,7 @@ func Provider() *schema.Provider {
 			//},
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"konnect_runtime_group":           resourceRuntimeGroup(),
+			"konnect_control_plane":           resourceControlPlane(),
 			"konnect_authentication_settings": resourceAuthenticationSettings(),
 			"konnect_identity_provider":       resourceIdentityProvider(),
 			"konnect_user":                    resourceUser(),
@@ -46,7 +46,7 @@ func Provider() *schema.Provider {
 			"konnect_plugin":                  resourcePlugin(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"konnect_runtime_group": dataSourceRuntimeGroup(),
+			"konnect_control_plane": dataSourceControlPlane(),
 			"konnect_user":          dataSourceUser(),
 			"konnect_team":          dataSourceTeam(),
 			"konnect_role":          dataSourceRole(),

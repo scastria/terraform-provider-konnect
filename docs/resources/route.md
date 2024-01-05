@@ -2,19 +2,19 @@
 subcategory: "Runtime Configuration"
 ---
 # Resource: konnect_route
-Represents a route within a runtime group
+Represents a route within a control plane
 ## Example usage
 ```hcl
-data "konnect_runtime_group" "RuntimeGroup" {
-  name = "TestRuntimeGroup"
+data "konnect_control_plane" "ControlPlane" {
+  name = "TestControlPlane"
 }
 resource "konnect_service" "Service" {
-  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  control_plane_id = data.konnect_control_plane.ControlPlane.id
   host = "mockbin.org"
   name = "Test"
 }
 resource "konnect_route" "example" {
-  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  control_plane_id = data.konnect_control_plane.ControlPlane.id
   service_id = konnect_service.Service.service_id
   name = "Test"
   protocols = ["http"]
@@ -26,7 +26,7 @@ resource "konnect_route" "example" {
 }
 ```
 ## Argument Reference
-* `runtime_group_id` - **(Required, String)** The id of the runtime group.
+* `control_plane_id` - **(Required, String)** The id of the control plane.
 * `service_id` - **(Optional, String)** The id of the service to forward traffic to.
 * `name` - **(Optional, String)** The name of the route.
 * `protocols` - **(Optional, List of String)** The protocols this route should allow. Allowed values: `http`, `https`
@@ -45,7 +45,7 @@ resource "konnect_route" "example" {
 * `name` - **(Required, String)** Name of header this route should require.
 * `values` - **(Required, List of String)** Allowed values this header should equal.
 ## Attribute Reference
-* `id` - **(String)** Same as `runtime_group_id`:`route_id`
+* `id` - **(String)** Same as `control_plane_id`:`route_id`
 * `route_id` - **(String)** Id of the route alone
 ## Import
 Routes can be imported using a proper value of `id` as described above

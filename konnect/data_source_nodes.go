@@ -15,7 +15,7 @@ func dataSourceNodes() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: dataSourceNodesRead,
 		Schema: map[string]*schema.Schema{
-			"runtime_group_id": {
+			"control_plane_id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -62,8 +62,8 @@ func dataSourceNodes() *schema.Resource {
 func dataSourceNodesRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
-	runtimeGroupId := d.Get("runtime_group_id").(string)
-	requestPath := fmt.Sprintf(client.NodePath, runtimeGroupId)
+	controlPlaneId := d.Get("control_plane_id").(string)
+	requestPath := fmt.Sprintf(client.NodePath, controlPlaneId)
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
@@ -88,6 +88,6 @@ func dataSourceNodesRead(ctx context.Context, d *schema.ResourceData, m interfac
 		nodes = append(nodes, itemMap)
 	}
 	d.Set("nodes", nodes)
-	d.SetId(runtimeGroupId)
+	d.SetId(controlPlaneId)
 	return diags
 }

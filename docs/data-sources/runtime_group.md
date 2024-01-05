@@ -1,20 +1,20 @@
 ---
 subcategory: "Runtime Configuration"
 ---
-# Data Source: konnect_runtime_group
-Represents a runtime group
+# Data Source: konnect_control_plane
+Represents a control plane
 ## Example usage
 ```hcl
-data "konnect_runtime_group" "example" {
-  name = "TestRuntimeGroup"
+data "konnect_control_plane" "example" {
+  name = "TestControlPlane"
 }
 ```
 ## Argument Reference
-* `search_name` - **(Optional, String)** The search string to apply to the name of the runtime group. Uses contains.
-* `name` - **(Optional, String)** The filter string to apply to the name of the runtime group. Uses equality.
+* `search_name` - **(Optional, String)** The search string to apply to the name of the control plane. Uses contains.
+* `name` - **(Optional, String)** The filter string to apply to the name of the control plane. Uses equality.
 ## Attribute Reference
 * `id` - **(String)** Guid
-* `description` - **(String)** The description of the runtime group.
-* `cluster_type` - **(String)** The cluster type of the runtime group.
-* `control_plane_endpoint` - **(String)** The control plane endpoint URL of the runtime group.
-* `telemetry_endpoint` - **(String)** The telemetry endpoint URL of the runtime group.
+* `description` - **(String)** The description of the control plane.
+* `cluster_type` - **(String)** The cluster type of the control plane.
+* `control_plane_endpoint` - **(String)** The control plane endpoint URL of the control plane.
+* `telemetry_endpoint` - **(String)** The telemetry endpoint URL of the control plane.

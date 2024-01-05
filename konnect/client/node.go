@@ -1,12 +1,12 @@
 package client
 
 const (
-	NodePath    = RuntimeGroupPathGet + "/nodes"
+	NodePath    = ControlPlanePathGet + "/nodes"
 	NodePathGet = NodePath + "/%s"
 )
 
 type Node struct {
-	RuntimeGroupId  string `json:"-"`
+	ControlPlaneId  string `json:"-"`
 	Id              string `json:"id"`
 	Version         string `json:"version"`
 	Hostname        string `json:"hostname"`

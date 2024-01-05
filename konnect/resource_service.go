@@ -23,7 +23,7 @@ func resourceService() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
-			"runtime_group_id": {
+			"control_plane_id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -89,7 +89,7 @@ func resourceService() *schema.Resource {
 }
 
 func fillService(c *client.Service, d *schema.ResourceData) {
-	c.RuntimeGroupId = d.Get("runtime_group_id").(string)
+	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.Host = d.Get("host").(string)
 	c.Enabled = d.Get("enabled").(bool)
 	name, ok := d.GetOk("name")
@@ -127,7 +127,7 @@ func fillService(c *client.Service, d *schema.ResourceData) {
 }
 
 func fillResourceDataFromService(c *client.Service, d *schema.ResourceData) {
-	d.Set("runtime_group_id", c.RuntimeGroupId)
+	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("host", c.Host)
 	d.Set("name", c.Name)
 	d.Set("retries", c.Retries)
@@ -152,7 +152,7 @@ func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interf
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.ServicePath, newService.RuntimeGroupId)
+	requestPath := fmt.Sprintf(client.ServicePath, newService.ControlPlaneId)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -167,7 +167,7 @@ func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interf
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal.RuntimeGroupId = newService.RuntimeGroupId
+	retVal.ControlPlaneId = newService.ControlPlaneId
 	d.SetId(retVal.ServiceEncodeId())
 	fillResourceDataFromService(retVal, d)
 	return diags
@@ -175,9 +175,9 @@ func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interf
 
 func resourceServiceRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	runtimeGroupId, id := client.ServiceDecodeId(d.Id())
+	controlPlaneId, id := client.ServiceDecodeId(d.Id())
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.ServicePathGet, runtimeGroupId, id)
+	requestPath := fmt.Sprintf(client.ServicePathGet, controlPlaneId, id)
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
@@ -193,14 +193,14 @@ func resourceServiceRead(ctx context.Context, d *schema.ResourceData, m interfac
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal.RuntimeGroupId = runtimeGroupId
+	retVal.ControlPlaneId = controlPlaneId
 	fillResourceDataFromService(retVal, d)
 	return diags
 }
 
 func resourceServiceUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	runtimeGroupId, id := client.ServiceDecodeId(d.Id())
+	controlPlaneId, id := client.ServiceDecodeId(d.Id())
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upService := client.Service{}
@@ -211,7 +211,7 @@ func resourceServiceUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.ServicePathGet, runtimeGroupId, id)
+	requestPath := fmt.Sprintf(client.ServicePathGet, controlPlaneId, id)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -224,16 +224,16 @@ func resourceServiceUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	retVal.RuntimeGroupId = runtimeGroupId
+	retVal.ControlPlaneId = controlPlaneId
 	fillResourceDataFromService(retVal, d)
 	return diags
 }
 
 func resourceServiceDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	runtimeGroupId, id := client.ServiceDecodeId(d.Id())
+	controlPlaneId, id := client.ServiceDecodeId(d.Id())
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.ServicePathGet, runtimeGroupId, id)
+	requestPath := fmt.Sprintf(client.ServicePathGet, controlPlaneId, id)
 	_, err := c.HttpRequest(ctx, true, http.MethodDelete, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		return diag.FromErr(err)

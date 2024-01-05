@@ -25,7 +25,7 @@ func resourcePlugin() *schema.Resource {
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
-			"runtime_group_id": {
+			"control_plane_id": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
@@ -85,7 +85,7 @@ func resourcePlugin() *schema.Resource {
 }
 
 func fillPlugin(c *client.Plugin, d *schema.ResourceData) {
-	c.RuntimeGroupId = d.Get("runtime_group_id").(string)
+	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.Enabled = d.Get("enabled").(bool)
 	name, ok := d.GetOk("name")
 	if ok {
@@ -137,7 +137,7 @@ func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema
 			break
 		}
 	}
-	d.Set("runtime_group_id", c.RuntimeGroupId)
+	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("name", c.Name)
 	d.Set("instance_name", c.InstanceName)
 	d.Set("protocols", c.Protocols)
@@ -202,8 +202,8 @@ func areConfigValuesEqual(ctx context.Context, key string, configValue interface
 	return configValueString == schemaFieldString
 }
 
-func getPluginSchema(ctx context.Context, c *client.Client, runtimeGroupId string, pluginName string) (*client.PluginSchema, error) {
-	requestPath := fmt.Sprintf(client.PluginSchemaPath, runtimeGroupId, pluginName)
+func getPluginSchema(ctx context.Context, c *client.Client, controlPlaneId string, pluginName string) (*client.PluginSchema, error) {
+	requestPath := fmt.Sprintf(client.PluginSchemaPath, controlPlaneId, pluginName)
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		return nil, err
@@ -227,7 +227,7 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.PluginPath, newPlugin.RuntimeGroupId)
+	requestPath := fmt.Sprintf(client.PluginPath, newPlugin.ControlPlaneId)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -242,13 +242,13 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	pluginSchema, err := getPluginSchema(ctx, c, newPlugin.RuntimeGroupId, retVal.Name)
+	pluginSchema, err := getPluginSchema(ctx, c, newPlugin.ControlPlaneId, retVal.Name)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 	retVal.ConfigAll = copyMapByJSON(retVal.Config)
-	retVal.RuntimeGroupId = newPlugin.RuntimeGroupId
+	retVal.ControlPlaneId = newPlugin.ControlPlaneId
 	d.SetId(retVal.PluginEncodeId())
 	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
@@ -256,9 +256,9 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 
 func resourcePluginRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	runtimeGroupId, id := client.PluginDecodeId(d.Id())
+	controlPlaneId, id := client.PluginDecodeId(d.Id())
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.PluginPathGet, runtimeGroupId, id)
+	requestPath := fmt.Sprintf(client.PluginPathGet, controlPlaneId, id)
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
@@ -274,20 +274,20 @@ func resourcePluginRead(ctx context.Context, d *schema.ResourceData, m interface
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	pluginSchema, err := getPluginSchema(ctx, c, runtimeGroupId, retVal.Name)
+	pluginSchema, err := getPluginSchema(ctx, c, controlPlaneId, retVal.Name)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
 	retVal.ConfigAll = copyMapByJSON(retVal.Config)
-	retVal.RuntimeGroupId = runtimeGroupId
+	retVal.ControlPlaneId = controlPlaneId
 	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
 }
 
 func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	runtimeGroupId, id := client.PluginDecodeId(d.Id())
+	controlPlaneId, id := client.PluginDecodeId(d.Id())
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upPlugin := client.Plugin{}
@@ -296,7 +296,7 @@ func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.PluginPathGet, runtimeGroupId, id)
+	requestPath := fmt.Sprintf(client.PluginPathGet, controlPlaneId, id)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -309,21 +309,21 @@ func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	pluginSchema, err := getPluginSchema(ctx, c, runtimeGroupId, retVal.Name)
+	pluginSchema, err := getPluginSchema(ctx, c, controlPlaneId, retVal.Name)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	retVal.ConfigAll = copyMapByJSON(retVal.Config)
-	retVal.RuntimeGroupId = runtimeGroupId
+	retVal.ControlPlaneId = controlPlaneId
 	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
 	return diags
 }
 
 func resourcePluginDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	runtimeGroupId, id := client.PluginDecodeId(d.Id())
+	controlPlaneId, id := client.PluginDecodeId(d.Id())
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.PluginPathGet, runtimeGroupId, id)
+	requestPath := fmt.Sprintf(client.PluginPathGet, controlPlaneId, id)
 	_, err := c.HttpRequest(ctx, true, http.MethodDelete, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		return diag.FromErr(err)

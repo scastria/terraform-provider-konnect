@@ -2,20 +2,20 @@
 subcategory: "Runtime Configuration"
 ---
 # Resource: konnect_service
-Represents a service within a runtime group
+Represents a service within a control plane
 ## Example usage
 ```hcl
-data "konnect_runtime_group" "RuntimeGroup" {
-  name = "TestRuntimeGroup"
+data "konnect_control_plane" "ControlPlane" {
+  name = "TestControlPlane"
 }
 resource "konnect_service" "example" {
-  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  control_plane_id = data.konnect_control_plane.ControlPlane.id
   host = "mockbin.org"
   name = "Test"
 }
 ```
 ## Argument Reference
-* `runtime_group_id` - **(Required, String)** The id of the runtime group.
+* `control_plane_id` - **(Required, String)** The id of the control plane.
 * `host` - **(Required, String)** The host of the service.
 * `name` - **(Optional, String)** The name of the service.
 * `retries` - **(Optional, Integer)** The number of retries to execute upon failure to proxy. Default: `5`
@@ -27,7 +27,7 @@ resource "konnect_service" "example" {
 * `write_timeout` - **(Optional, Integer)** The timeout in milliseconds between two successive write operations for transmitting a request to the host. Default: `60000`
 * `enabled` - **(Optional, Boolean)** Whether the service is active. Default: `true`
 ## Attribute Reference
-* `id` - **(String)** Same as `runtime_group_id`:`service_id`
+* `id` - **(String)** Same as `control_plane_id`:`service_id`
 * `service_id` - **(String)** Id of the service alone
 ## Import
 Services can be imported using a proper value of `id` as described above

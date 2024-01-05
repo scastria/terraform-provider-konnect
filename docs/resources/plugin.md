@@ -2,14 +2,14 @@
 subcategory: "Runtime Configuration"
 ---
 # Resource: konnect_plugin
-Represents a plugin within a runtime group
+Represents a plugin within a control plane
 ## Example usage
 ```hcl
-data "konnect_runtime_group" "RuntimeGroup" {
-  name = "TestRuntimeGroup"
+data "konnect_control_plane" "ControlPlane" {
+  name = "TestControlPlane"
 }
 resource "konnect_plugin" "example" {
-  runtime_group_id = data.konnect_runtime_group.RuntimeGroup.id
+  control_plane_id = data.konnect_control_plane.ControlPlane.id
   name = "rate-limiting"
   config_json = <<EOF
 {
@@ -19,7 +19,7 @@ EOF
 }
 ```
 ## Argument Reference
-* `runtime_group_id` - **(Required, String)** The id of the runtime group.
+* `control_plane_id` - **(Required, String)** The id of the control plane.
 * `name` - **(Required, String)** The name of the plugin which must match a valid installed plugin.
 * `instance_name` - **(Optional, String)** The instance name of the plugin. Default: `-`
 * `protocols` - **(Optional, List of String)** A list of the request protocols that will trigger this plugin. Allowed values: `grpc`, `grpcs`, `http`, `https`, `tcp`, `tls`, `tls_passthrough`, `udp`, `ws`, `wss`
@@ -29,7 +29,7 @@ EOF
 * `route_id` - **(Optional, String)** If set, the plugin will only activate when receiving requests via the specified route.
 * `consumer_id` - **(Optional, String)** If set, the plugin will activate only for requests where the specified consumer has been authenticated.
 ## Attribute Reference
-* `id` - **(String)** Same as `runtime_group_id`:`plugin_id`
+* `id` - **(String)** Same as `control_plane_id`:`plugin_id`
 * `plugin_id` - **(String)** Id of the plugin alone
 * `config_all_json` - **(JSON)** The full configuration properties for the plugin, including all properties with their default values not specified in `config`.
 ## Import
