@@ -14,8 +14,8 @@ type ConsumerACL struct {
 	Group          string `json:"group"`
 }
 
-func (ck *ConsumerACL) ConsumerACLEncodeId() string {
-	return ck.ControlPlaneId + IdSeparator + ck.ConsumerId + IdSeparator + ck.Id
+func (ca *ConsumerACL) ConsumerACLEncodeId() string {
+	return ca.ControlPlaneId + IdSeparator + ca.ConsumerId + IdSeparator + ca.Id
 }
 
 func ConsumerACLDecodeId(s string) (string, string, string) {

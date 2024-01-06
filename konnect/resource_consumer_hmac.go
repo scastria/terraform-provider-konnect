@@ -12,12 +12,12 @@ import (
 	"net/http"
 )
 
-func resourceConsumerACL() *schema.Resource {
+func resourceConsumerHMAC() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: resourceConsumerACLCreate,
-		ReadContext:   resourceConsumerACLRead,
-		UpdateContext: resourceConsumerACLUpdate,
-		DeleteContext: resourceConsumerACLDelete,
+		CreateContext: resourceConsumerHMACCreate,
+		ReadContext:   resourceConsumerHMACRead,
+		UpdateContext: resourceConsumerHMACUpdate,
+		DeleteContext: resourceConsumerHMACDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -30,11 +30,16 @@ func resourceConsumerACL() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"group": {
+			"username": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"acl_id": {
+			"secret": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
+			"hmac_id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -42,31 +47,36 @@ func resourceConsumerACL() *schema.Resource {
 	}
 }
 
-func fillConsumerACL(c *client.ConsumerACL, d *schema.ResourceData) {
+func fillConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.ConsumerId = d.Get("consumer_id").(string)
-	c.Group = d.Get("group").(string)
+	c.Username = d.Get("username").(string)
+	secret, ok := d.GetOk("secret")
+	if ok {
+		c.Secret = secret.(string)
+	}
 }
 
-func fillResourceDataFromConsumerACL(c *client.ConsumerACL, d *schema.ResourceData) {
+func fillResourceDataFromConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData) {
 	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("consumer_id", c.ConsumerId)
-	d.Set("group", c.Group)
-	d.Set("acl_id", c.Id)
+	d.Set("username", c.Username)
+	d.Set("secret", c.Secret)
+	d.Set("hmac_id", c.Id)
 }
 
-func resourceConsumerACLCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConsumerHMACCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	newConsumerACL := client.ConsumerACL{}
-	fillConsumerACL(&newConsumerACL, d)
-	err := json.NewEncoder(&buf).Encode(newConsumerACL)
+	newConsumerHMAC := client.ConsumerHMAC{}
+	fillConsumerHMAC(&newConsumerHMAC, d)
+	err := json.NewEncoder(&buf).Encode(newConsumerHMAC)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.ConsumerACLPath, newConsumerACL.ControlPlaneId, newConsumerACL.ConsumerId)
+	requestPath := fmt.Sprintf(client.ConsumerHMACPath, newConsumerHMAC.ControlPlaneId, newConsumerHMAC.ConsumerId)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -75,24 +85,24 @@ func resourceConsumerACLCreate(ctx context.Context, d *schema.ResourceData, m in
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal := &client.ConsumerACL{}
+	retVal := &client.ConsumerHMAC{}
 	err = json.NewDecoder(body).Decode(retVal)
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
 	}
-	retVal.ControlPlaneId = newConsumerACL.ControlPlaneId
-	retVal.ConsumerId = newConsumerACL.ConsumerId
-	d.SetId(retVal.ConsumerACLEncodeId())
-	fillResourceDataFromConsumerACL(retVal, d)
+	retVal.ControlPlaneId = newConsumerHMAC.ControlPlaneId
+	retVal.ConsumerId = newConsumerHMAC.ConsumerId
+	d.SetId(retVal.ConsumerHMACEncodeId())
+	fillResourceDataFromConsumerHMAC(retVal, d)
 	return diags
 }
 
-func resourceConsumerACLRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConsumerHMACRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	controlPlaneId, consumerId, id := client.ConsumerACLDecodeId(d.Id())
+	controlPlaneId, consumerId, id := client.ConsumerHMACDecodeId(d.Id())
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.ConsumerACLPathGet, controlPlaneId, consumerId, id)
+	requestPath := fmt.Sprintf(client.ConsumerHMACPathGet, controlPlaneId, consumerId, id)
 	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
@@ -102,7 +112,7 @@ func resourceConsumerACLRead(ctx context.Context, d *schema.ResourceData, m inte
 		}
 		return diag.FromErr(err)
 	}
-	retVal := &client.ConsumerACL{}
+	retVal := &client.ConsumerHMAC{}
 	err = json.NewDecoder(body).Decode(retVal)
 	if err != nil {
 		d.SetId("")
@@ -110,24 +120,24 @@ func resourceConsumerACLRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	retVal.ControlPlaneId = controlPlaneId
 	retVal.ConsumerId = consumerId
-	fillResourceDataFromConsumerACL(retVal, d)
+	fillResourceDataFromConsumerHMAC(retVal, d)
 	return diags
 }
 
-func resourceConsumerACLUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConsumerHMACUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	controlPlaneId, consumerId, id := client.ConsumerACLDecodeId(d.Id())
+	controlPlaneId, consumerId, id := client.ConsumerHMACDecodeId(d.Id())
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
-	upConsumerACL := client.ConsumerACL{}
-	fillConsumerACL(&upConsumerACL, d)
+	upConsumerHMAC := client.ConsumerHMAC{}
+	fillConsumerHMAC(&upConsumerHMAC, d)
 	// Hide non-updateable fields
 	//upTeam.IsPredefined = false
-	err := json.NewEncoder(&buf).Encode(upConsumerACL)
+	err := json.NewEncoder(&buf).Encode(upConsumerHMAC)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	requestPath := fmt.Sprintf(client.ConsumerACLPathGet, controlPlaneId, consumerId, id)
+	requestPath := fmt.Sprintf(client.ConsumerHMACPathGet, controlPlaneId, consumerId, id)
 	requestHeaders := http.Header{
 		headers.ContentType: []string{client.ApplicationJson},
 	}
@@ -135,22 +145,22 @@ func resourceConsumerACLUpdate(ctx context.Context, d *schema.ResourceData, m in
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	retVal := &client.ConsumerACL{}
+	retVal := &client.ConsumerHMAC{}
 	err = json.NewDecoder(body).Decode(retVal)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
 	retVal.ConsumerId = consumerId
-	fillResourceDataFromConsumerACL(retVal, d)
+	fillResourceDataFromConsumerHMAC(retVal, d)
 	return diags
 }
 
-func resourceConsumerACLDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceConsumerHMACDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	controlPlaneId, consumerId, id := client.ConsumerACLDecodeId(d.Id())
+	controlPlaneId, consumerId, id := client.ConsumerHMACDecodeId(d.Id())
 	c := m.(*client.Client)
-	requestPath := fmt.Sprintf(client.ConsumerACLPathGet, controlPlaneId, consumerId, id)
+	requestPath := fmt.Sprintf(client.ConsumerHMACPathGet, controlPlaneId, consumerId, id)
 	_, err := c.HttpRequest(ctx, true, http.MethodDelete, requestPath, nil, nil, &bytes.Buffer{})
 	if err != nil {
 		return diag.FromErr(err)

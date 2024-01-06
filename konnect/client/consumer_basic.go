@@ -13,10 +13,11 @@ type ConsumerBasic struct {
 	Id             string `json:"id"`
 	Username       string `json:"username"`
 	Password       string `json:"password"`
+	PasswordHash   string `json:"-"`
 }
 
-func (ck *ConsumerBasic) ConsumerBasicEncodeId() string {
-	return ck.ControlPlaneId + IdSeparator + ck.ConsumerId + IdSeparator + ck.Id
+func (cb *ConsumerBasic) ConsumerBasicEncodeId() string {
+	return cb.ControlPlaneId + IdSeparator + cb.ConsumerId + IdSeparator + cb.Id
 }
 
 func ConsumerBasicDecodeId(s string) (string, string, string) {

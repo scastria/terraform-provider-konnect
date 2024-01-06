@@ -151,3 +151,15 @@ data "konnect_consumer" "C" {
 #  consumer_id = data.konnect_consumer.C.consumer_id
 #  group = "shawn2"
 #}
+#resource "konnect_consumer_basic" "CB" {
+#  control_plane_id = data.konnect_control_plane.RG.id
+#  consumer_id = data.konnect_consumer.C.consumer_id
+#  username = "shawn"
+#  password = "pass2"
+#}
+#resource "konnect_consumer_hmac" "CHMAC" {
+#  control_plane_id = data.konnect_control_plane.RG.id
+#  consumer_id      = data.konnect_consumer.C.consumer_id
+#  username         = "shawn"
+##  secret           = "pass2"
+#}
