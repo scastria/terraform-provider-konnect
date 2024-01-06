@@ -3,10 +3,9 @@ package client
 import "strings"
 
 const (
-	PluginPath    = ControlPlanePathGet + "/core-entities/plugins"
-	PluginPathGet = PluginPath + "/%s"
-	// TODO: Fix this endpoint path to updated value
-	PluginSchemaPath = "control_planes/%s/schemas/plugins/%s"
+	PluginPath       = ControlPlanePathGet + "/core-entities/plugins"
+	PluginPathGet    = PluginPath + "/%s"
+	PluginSchemaPath = ControlPlanePathGet + "/core-entities/schemas/plugins/%s"
 )
 
 type Plugin struct {
