@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
 )
 
 const (
@@ -109,10 +108,5 @@ func (c *Client) RequestPath(isRegion bool, path string) string {
 	} else {
 		host = GlobalRegion
 	}
-	//Hack for plugin schemas until Konnect API is fixed
-	if strings.Contains(path, "schemas") {
-		return fmt.Sprintf("https://%s.%s/konnect-api/api/%s", host, KonnectDomain, path)
-	} else {
-		return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
-	}
+	return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
 }
