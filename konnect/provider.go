@@ -47,6 +47,7 @@ func Provider() *schema.Provider {
 			"konnect_consumer_acl":            resourceConsumerACL(),
 			"konnect_consumer_basic":          resourceConsumerBasic(),
 			"konnect_consumer_hmac":           resourceConsumerHMAC(),
+			"konnect_consumer_jwt":            resourceConsumerJWT(),
 			"konnect_plugin":                  resourcePlugin(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{

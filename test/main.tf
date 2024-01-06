@@ -163,3 +163,9 @@ data "konnect_consumer" "C" {
 #  username         = "shawn"
 ##  secret           = "pass2"
 #}
+#resource "konnect_consumer_jwt" "CJWT" {
+#  control_plane_id = data.konnect_control_plane.RG.id
+#  consumer_id      = data.konnect_consumer.C.consumer_id
+#  secret           = "pass"
+#  key = "hello"
+#}
