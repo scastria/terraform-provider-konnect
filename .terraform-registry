@@ -1,0 +1,3 @@
+Request: remove versions 0.1.15, 0.1.16, 0.1.17, 0.1.18, and 0.1.19 from registry
+Registry Link: https://registry.terraform.io/providers/scastria/konnect
+Request by: shawn@spcware.com
