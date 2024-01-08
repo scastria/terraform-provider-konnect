@@ -2,7 +2,7 @@ package client
 
 const (
 	AuthenticationSettingsId   = "authentication-settings"
-	AuthenticationSettingsPath = AuthenticationSettingsId
+	AuthenticationSettingsPath = "v3/" + AuthenticationSettingsId
 )
 
 type AuthenticationSettings struct {

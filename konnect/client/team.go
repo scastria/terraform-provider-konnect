@@ -1,7 +1,7 @@
 package client
 
 const (
-	TeamPath    = "teams"
+	TeamPath    = "v3/teams"
 	TeamPathGet = TeamPath + "/%s"
 )
 

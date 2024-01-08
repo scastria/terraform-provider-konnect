@@ -1,7 +1,7 @@
 package client
 
 const (
-	ControlPlanePath    = "control-planes"
+	ControlPlanePath    = "v2/control-planes"
 	ControlPlanePathGet = ControlPlanePath + "/%s"
 )
 

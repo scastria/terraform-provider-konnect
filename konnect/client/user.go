@@ -1,7 +1,7 @@
 package client
 
 const (
-	UserPath    = "users"
+	UserPath    = "v3/users"
 	UserPathGet = UserPath + "/%s"
 )
 

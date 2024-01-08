@@ -2,7 +2,7 @@ package client
 
 const (
 	IdentityProviderId   = "identity-provider"
-	IdentityProviderPath = IdentityProviderId
+	IdentityProviderPath = "v3/" + IdentityProviderId
 	EmailClaim           = "email"
 	NameClaim            = "name"
 	GroupsClaim          = "groups"

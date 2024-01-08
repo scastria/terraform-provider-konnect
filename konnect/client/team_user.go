@@ -3,7 +3,7 @@ package client
 import "strings"
 
 const (
-	TeamUserPath       = "teams/%s/users"
+	TeamUserPath       = "v3/teams/%s/users"
 	TeamUserPathCreate = TeamUserPath
 	TeamUserPathDelete = TeamUserPath + "/%s"
 )

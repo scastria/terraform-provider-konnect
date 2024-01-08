@@ -3,7 +3,7 @@ package client
 import "strings"
 
 const (
-	UserRolePath       = "users/%s/assigned-roles"
+	UserRolePath       = "v3/users/%s/assigned-roles"
 	UserRolePathCreate = UserRolePath
 	UserRolePathDelete = UserRolePath + "/%s"
 )

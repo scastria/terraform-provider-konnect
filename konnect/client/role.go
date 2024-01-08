@@ -1,7 +1,7 @@
 package client
 
 const (
-	RolePath                 = "roles"
+	RolePath                 = "v3/roles"
 	ControlPlanesDisplayName = "Control Planes"
 	ServicesDisplayName      = "Services"
 )

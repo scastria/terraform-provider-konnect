@@ -108,5 +108,5 @@ func (c *Client) RequestPath(isRegion bool, path string) string {
 	} else {
 		host = GlobalRegion
 	}
-	return fmt.Sprintf("https://%s.%s/v2/%s", host, KonnectDomain, path)
+	return fmt.Sprintf("https://%s.%s/%s", host, KonnectDomain, path)
 }
