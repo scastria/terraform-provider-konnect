@@ -22,4 +22,4 @@ provider "konnect" {
 ```
 ## Argument Reference
 * `pat` - **(Required, String)** Your personal access token obtained via Konnect UI. Can be specified via env variable `KONNECT_PAT`.
-* `region` - **(Optional, String)** The region for accessing region specific resources. Can be specified via env variable `KONNECT_REGION`. Allowed values: `us`, `eu`. Default: `us`
+* `region` - **(Optional, String)** The region for accessing region specific resources. Can be specified via env variable `KONNECT_REGION`. Allowed values: `us`, `eu`, `au`. Default: `us`
