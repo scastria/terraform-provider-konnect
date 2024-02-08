@@ -20,7 +20,7 @@ func Provider() *schema.Provider {
 				Type:         schema.TypeString,
 				Optional:     true,
 				DefaultFunc:  schema.EnvDefaultFunc("KONNECT_REGION", "us"),
-				ValidateFunc: validation.StringInSlice([]string{"us", "eu"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"us", "eu", "au"}, false),
 			},
 			//"default_tags": {
 			//	Type:     schema.TypeSet,
