@@ -9,6 +9,12 @@ terraform {
 provider "konnect" {
 }
 
+# resource "konnect_custom_plugin_schema" "CPS" {
+#   control_plane_id = data.konnect_control_plane.RG.id
+#   name = "shawn"
+#   schema_lua = "return { name=\"shawn\", fields = { { config = { type = \"record\", fields = { } } } } }"
+# }
+
 #resource "konnect_plugin" "P" {
 #  control_plane_id = data.konnect_control_plane.RG.id
 #  name = "rate-limiting"

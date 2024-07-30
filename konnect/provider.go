@@ -49,6 +49,7 @@ func Provider() *schema.Provider {
 			"konnect_consumer_hmac":           resourceConsumerHMAC(),
 			"konnect_consumer_jwt":            resourceConsumerJWT(),
 			"konnect_plugin":                  resourcePlugin(),
+			"konnect_custom_plugin_schema":    resourceCustomPluginSchema(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"konnect_control_plane": dataSourceControlPlane(),
