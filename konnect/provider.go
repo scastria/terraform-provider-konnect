@@ -22,13 +22,16 @@ func Provider() *schema.Provider {
 				DefaultFunc:  schema.EnvDefaultFunc("KONNECT_REGION", "us"),
 				ValidateFunc: validation.StringInSlice([]string{"us", "eu", "au"}, false),
 			},
-			//"default_tags": {
-			//	Type:     schema.TypeSet,
-			//	Optional: true,
-			//	Elem: &schema.Schema{
-			//		Type: schema.TypeString,
-			//	},
-			//},
+			"num_retries": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("KONNECT_NUM_RETRIES", 3),
+			},
+			"retry_delay": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("KONNECT_RETRY_DELAY", 30),
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"konnect_control_plane":           resourceControlPlane(),
@@ -68,15 +71,11 @@ func Provider() *schema.Provider {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	pat := d.Get("pat").(string)
 	region := d.Get("region").(string)
-	//defaultTags := []string{}
-	//defaultTagsSet, ok := d.GetOk("default_tags")
-	//if ok {
-	//	defaultTags = convertSetToArray(defaultTagsSet.(*schema.Set))
-	//}
+	numRetries := d.Get("num_retries").(int)
+	retryDelay := d.Get("retry_delay").(int)
 
 	var diags diag.Diagnostics
-	//c, err := client.NewClient(pat, region, defaultTags)
-	c, err := client.NewClient(pat, region)
+	c, err := client.NewClient(pat, region, numRetries, retryDelay)
 	if err != nil {
 		return nil, diag.FromErr(err)
 	}

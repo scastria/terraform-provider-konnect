@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 )
 
 const (
@@ -35,18 +36,19 @@ type EntityId struct {
 }
 
 type Client struct {
-	pat    string
-	region string
-	//defaultTags []string
+	pat        string
+	region     string
+	numRetries int
+	retryDelay int
 	httpClient *http.Client
 }
 
-// func NewClient(pat string, region string, defaultTags []string) (*Client, error) {
-func NewClient(pat string, region string) (*Client, error) {
+func NewClient(pat string, region string, numRetries int, retryDelay int) (*Client, error) {
 	c := &Client{
-		pat:    pat,
-		region: region,
-		//defaultTags: defaultTags,
+		pat:        pat,
+		region:     region,
+		numRetries: numRetries,
+		retryDelay: retryDelay,
 		httpClient: &http.Client{},
 	}
 	return c, nil
@@ -85,9 +87,22 @@ func (c *Client) HttpRequest(ctx context.Context, isRegion bool, method string, 
 	} else {
 		tflog.Info(ctx, "Konnect API: ", map[string]any{"request": string(requestDump)})
 	}
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, &RequestError{StatusCode: http.StatusInternalServerError, Err: err}
+	try := 0
+	var resp *http.Response
+	for {
+		resp, err = c.httpClient.Do(req)
+		if err != nil {
+			return nil, &RequestError{StatusCode: http.StatusInternalServerError, Err: err}
+		}
+		if (resp.StatusCode == http.StatusTooManyRequests) || (resp.StatusCode >= http.StatusInternalServerError) {
+			try++
+			if try >= c.numRetries {
+				break
+			}
+			time.Sleep(time.Duration(c.retryDelay) * time.Second)
+			continue
+		}
+		break
 	}
 	defer resp.Body.Close()
 	respBody := new(bytes.Buffer)
