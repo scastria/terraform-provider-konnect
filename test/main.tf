@@ -92,9 +92,9 @@ provider "konnect" {
 #  role_display_name = data.konnect_role.R.display_name
 #}
 
-data "konnect_team" "T" {
-  name = "api-product-developer"
-}
+# data "konnect_team" "T" {
+#   name = "api-product-developer"
+# }
 
 #resource "konnect_user" "U" {
 #  email = "jblow@example.com"

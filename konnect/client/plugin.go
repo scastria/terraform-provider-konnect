@@ -28,9 +28,10 @@ type PluginSchema struct {
 	Fields []map[string]PluginField `json:"fields"`
 }
 type PluginField struct {
-	Type    string                   `json:"type"`
-	Default interface{}              `json:"default"`
-	Fields  []map[string]PluginField `json:"fields"`
+	Type            string                   `json:"type"`
+	Default         interface{}              `json:"default"`
+	Fields          []map[string]PluginField `json:"fields"`
+	ShorthandFields []map[string]PluginField `json:"shorthand_fields"`
 }
 
 func (s *Plugin) PluginEncodeId() string {
