@@ -14,3 +14,5 @@ type Team struct {
 type TeamCollection struct {
 	Teams []Team `json:"data"`
 }
+
+//LABELS

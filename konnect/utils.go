@@ -19,6 +19,38 @@ func convertSetToArray(set *schema.Set) []string {
 	return retVal
 }
 
+func unionArrays(l1 []string, l2 []string) []string {
+	uniqueMap := make(map[string]bool)
+	retVal := []string{}
+	for _, item := range l1 {
+		if !uniqueMap[item] {
+			uniqueMap[item] = true
+			retVal = append(retVal, item)
+		}
+	}
+	for _, item := range l2 {
+		if !uniqueMap[item] {
+			uniqueMap[item] = true
+			retVal = append(retVal, item)
+		}
+	}
+	return retVal
+}
+
+func subtractArrays(l1 []string, l2 []string) []string {
+	removeMap := make(map[string]bool)
+	for _, item := range l2 {
+		removeMap[item] = true
+	}
+	retVal := []string{}
+	for _, item := range l1 {
+		if !removeMap[item] {
+			retVal = append(retVal, item)
+		}
+	}
+	return retVal
+}
+
 func find(slice []string, val string) (int, bool) {
 	for i, item := range slice {
 		if item == val {

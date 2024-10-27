@@ -127,8 +127,6 @@ func resourceConsumerUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	buf := bytes.Buffer{}
 	upConsumer := client.Consumer{}
 	fillConsumer(&upConsumer, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upConsumer)
 	if err != nil {
 		return diag.FromErr(err)

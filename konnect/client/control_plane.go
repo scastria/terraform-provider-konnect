@@ -19,3 +19,5 @@ type ControlPlaneConfig struct {
 type ControlPlaneCollection struct {
 	ControlPlanes []ControlPlane `json:"data"`
 }
+
+//LABELS

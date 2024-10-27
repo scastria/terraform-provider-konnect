@@ -19,6 +19,7 @@ func resourceService() *schema.Resource {
 		ReadContext:   resourceServiceRead,
 		UpdateContext: resourceServiceUpdate,
 		DeleteContext: resourceServiceDelete,
+		CustomizeDiff: resourceDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -80,6 +81,20 @@ func resourceService() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
+			"tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_tags": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"service_id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -88,7 +103,19 @@ func resourceService() *schema.Resource {
 	}
 }
 
-func fillService(c *client.Service, d *schema.ResourceData) {
+func resourceDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+	c := m.(*client.Client)
+	tags := []string{}
+	tagsSet, ok := diff.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+	}
+	allTags := unionArrays(tags, c.DefaultTags)
+	diff.SetNew("all_tags", allTags)
+	return nil
+}
+
+func fillService(c *client.Service, d *schema.ResourceData, defaultTags []string) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.Host = d.Get("host").(string)
 	c.Enabled = d.Get("enabled").(bool)
@@ -124,9 +151,16 @@ func fillService(c *client.Service, d *schema.ResourceData) {
 	if ok {
 		c.WriteTimeout = writeTimeout.(int)
 	}
+	tags := []string{}
+	tagsSet, ok := d.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+		c.Tags = tags
+	}
+	c.AllTags = unionArrays(tags, defaultTags)
 }
 
-func fillResourceDataFromService(c *client.Service, d *schema.ResourceData) {
+func fillResourceDataFromService(c *client.Service, d *schema.ResourceData, defaultTags []string) {
 	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("host", c.Host)
 	d.Set("name", c.Name)
@@ -138,6 +172,8 @@ func fillResourceDataFromService(c *client.Service, d *schema.ResourceData) {
 	d.Set("read_timeout", c.ReadTimeout)
 	d.Set("write_timeout", c.WriteTimeout)
 	d.Set("enabled", c.Enabled)
+	d.Set("all_tags", c.AllTags)
+	d.Set("tags", subtractArrays(c.AllTags, defaultTags))
 	d.Set("service_id", c.Id)
 }
 
@@ -146,7 +182,7 @@ func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	newService := client.Service{}
-	fillService(&newService, d)
+	fillService(&newService, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(newService)
 	if err != nil {
 		d.SetId("")
@@ -169,7 +205,7 @@ func resourceServiceCreate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 	retVal.ControlPlaneId = newService.ControlPlaneId
 	d.SetId(retVal.ServiceEncodeId())
-	fillResourceDataFromService(retVal, d)
+	fillResourceDataFromService(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -194,7 +230,7 @@ func resourceServiceRead(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromService(retVal, d)
+	fillResourceDataFromService(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -204,9 +240,7 @@ func resourceServiceUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upService := client.Service{}
-	fillService(&upService, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
+	fillService(&upService, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(upService)
 	if err != nil {
 		return diag.FromErr(err)
@@ -225,7 +259,7 @@ func resourceServiceUpdate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromService(retVal, d)
+	fillResourceDataFromService(retVal, d, c.DefaultTags)
 	return diags
 }
 

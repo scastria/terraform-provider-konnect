@@ -32,6 +32,13 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("KONNECT_RETRY_DELAY", 30),
 			},
+			"default_tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"konnect_control_plane":           resourceControlPlane(),
@@ -73,9 +80,14 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	region := d.Get("region").(string)
 	numRetries := d.Get("num_retries").(int)
 	retryDelay := d.Get("retry_delay").(int)
+	defaultTags := []string{}
+	defaultTagsSet, ok := d.GetOk("default_tags")
+	if ok {
+		defaultTags = convertSetToArray(defaultTagsSet.(*schema.Set))
+	}
 
 	var diags diag.Diagnostics
-	c, err := client.NewClient(pat, region, numRetries, retryDelay)
+	c, err := client.NewClient(pat, region, numRetries, retryDelay, defaultTags)
 	if err != nil {
 		return nil, diag.FromErr(err)
 	}

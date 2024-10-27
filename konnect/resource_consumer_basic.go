@@ -131,8 +131,6 @@ func resourceConsumerBasicUpdate(ctx context.Context, d *schema.ResourceData, m 
 	buf := bytes.Buffer{}
 	upConsumerBasic := client.ConsumerBasic{}
 	fillConsumerBasic(&upConsumerBasic, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upConsumerBasic)
 	if err != nil {
 		return diag.FromErr(err)

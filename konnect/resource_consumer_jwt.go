@@ -153,8 +153,6 @@ func resourceConsumerJWTUpdate(ctx context.Context, d *schema.ResourceData, m in
 	buf := bytes.Buffer{}
 	upConsumerJWT := client.ConsumerJWT{}
 	fillConsumerJWT(&upConsumerJWT, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upConsumerJWT)
 	if err != nil {
 		return diag.FromErr(err)

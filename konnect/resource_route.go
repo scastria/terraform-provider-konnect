@@ -287,8 +287,6 @@ func resourceRouteUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	buf := bytes.Buffer{}
 	upRoute := client.Route{}
 	fillRoute(&upRoute, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upRoute)
 	if err != nil {
 		return diag.FromErr(err)

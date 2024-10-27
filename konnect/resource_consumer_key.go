@@ -125,8 +125,6 @@ func resourceConsumerKeyUpdate(ctx context.Context, d *schema.ResourceData, m in
 	buf := bytes.Buffer{}
 	upConsumerKey := client.ConsumerKey{}
 	fillConsumerKey(&upConsumerKey, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upConsumerKey)
 	if err != nil {
 		return diag.FromErr(err)

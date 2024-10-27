@@ -131,8 +131,6 @@ func resourceConsumerHMACUpdate(ctx context.Context, d *schema.ResourceData, m i
 	buf := bytes.Buffer{}
 	upConsumerHMAC := client.ConsumerHMAC{}
 	fillConsumerHMAC(&upConsumerHMAC, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upConsumerHMAC)
 	if err != nil {
 		return diag.FromErr(err)

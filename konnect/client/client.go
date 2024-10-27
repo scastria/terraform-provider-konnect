@@ -36,20 +36,22 @@ type EntityId struct {
 }
 
 type Client struct {
-	pat        string
-	region     string
-	numRetries int
-	retryDelay int
-	httpClient *http.Client
+	pat         string
+	region      string
+	numRetries  int
+	retryDelay  int
+	DefaultTags []string
+	httpClient  *http.Client
 }
 
-func NewClient(pat string, region string, numRetries int, retryDelay int) (*Client, error) {
+func NewClient(pat string, region string, numRetries int, retryDelay int, defaultTags []string) (*Client, error) {
 	c := &Client{
-		pat:        pat,
-		region:     region,
-		numRetries: numRetries,
-		retryDelay: retryDelay,
-		httpClient: &http.Client{},
+		pat:         pat,
+		region:      region,
+		numRetries:  numRetries,
+		retryDelay:  retryDelay,
+		DefaultTags: defaultTags,
+		httpClient:  &http.Client{},
 	}
 	return c, nil
 }

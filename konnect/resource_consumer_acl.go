@@ -121,8 +121,6 @@ func resourceConsumerACLUpdate(ctx context.Context, d *schema.ResourceData, m in
 	buf := bytes.Buffer{}
 	upConsumerACL := client.ConsumerACL{}
 	fillConsumerACL(&upConsumerACL, d)
-	// Hide non-updateable fields
-	//upTeam.IsPredefined = false
 	err := json.NewEncoder(&buf).Encode(upConsumerACL)
 	if err != nil {
 		return diag.FromErr(err)
