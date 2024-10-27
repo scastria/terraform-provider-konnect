@@ -18,6 +18,7 @@ func resourceConsumerHMAC() *schema.Resource {
 		ReadContext:   resourceConsumerHMACRead,
 		UpdateContext: resourceConsumerHMACUpdate,
 		DeleteContext: resourceConsumerHMACDelete,
+		CustomizeDiff: resourceConsumerHMACDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -39,6 +40,20 @@ func resourceConsumerHMAC() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_tags": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"hmac_id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -47,7 +62,19 @@ func resourceConsumerHMAC() *schema.Resource {
 	}
 }
 
-func fillConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData) {
+func resourceConsumerHMACDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+	c := m.(*client.Client)
+	tags := []string{}
+	tagsSet, ok := diff.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+	}
+	allTags := unionArrays(tags, c.DefaultTags)
+	diff.SetNew("all_tags", allTags)
+	return nil
+}
+
+func fillConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData, defaultTags []string) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.ConsumerId = d.Get("consumer_id").(string)
 	c.Username = d.Get("username").(string)
@@ -55,9 +82,18 @@ func fillConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData) {
 	if ok {
 		c.Secret = secret.(string)
 	}
+	tags := []string{}
+	tagsSet, ok := d.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+		c.Tags = tags
+	}
+	c.AllTags = unionArrays(tags, defaultTags)
+	d.Set("all_tags", c.AllTags)
+	d.Set("tags", subtractArrays(c.AllTags, defaultTags))
 }
 
-func fillResourceDataFromConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData) {
+func fillResourceDataFromConsumerHMAC(c *client.ConsumerHMAC, d *schema.ResourceData, defaultTags []string) {
 	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("consumer_id", c.ConsumerId)
 	d.Set("username", c.Username)
@@ -70,7 +106,7 @@ func resourceConsumerHMACCreate(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	newConsumerHMAC := client.ConsumerHMAC{}
-	fillConsumerHMAC(&newConsumerHMAC, d)
+	fillConsumerHMAC(&newConsumerHMAC, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(newConsumerHMAC)
 	if err != nil {
 		d.SetId("")
@@ -94,7 +130,7 @@ func resourceConsumerHMACCreate(ctx context.Context, d *schema.ResourceData, m i
 	retVal.ControlPlaneId = newConsumerHMAC.ControlPlaneId
 	retVal.ConsumerId = newConsumerHMAC.ConsumerId
 	d.SetId(retVal.ConsumerHMACEncodeId())
-	fillResourceDataFromConsumerHMAC(retVal, d)
+	fillResourceDataFromConsumerHMAC(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -120,7 +156,7 @@ func resourceConsumerHMACRead(ctx context.Context, d *schema.ResourceData, m int
 	}
 	retVal.ControlPlaneId = controlPlaneId
 	retVal.ConsumerId = consumerId
-	fillResourceDataFromConsumerHMAC(retVal, d)
+	fillResourceDataFromConsumerHMAC(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -130,7 +166,7 @@ func resourceConsumerHMACUpdate(ctx context.Context, d *schema.ResourceData, m i
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upConsumerHMAC := client.ConsumerHMAC{}
-	fillConsumerHMAC(&upConsumerHMAC, d)
+	fillConsumerHMAC(&upConsumerHMAC, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(upConsumerHMAC)
 	if err != nil {
 		return diag.FromErr(err)
@@ -150,7 +186,7 @@ func resourceConsumerHMACUpdate(ctx context.Context, d *schema.ResourceData, m i
 	}
 	retVal.ControlPlaneId = controlPlaneId
 	retVal.ConsumerId = consumerId
-	fillResourceDataFromConsumerHMAC(retVal, d)
+	fillResourceDataFromConsumerHMAC(retVal, d, c.DefaultTags)
 	return diags
 }
 

@@ -20,6 +20,8 @@ type Plugin struct {
 	Route          *EntityId              `json:"route,omitempty"`
 	Service        *EntityId              `json:"service,omitempty"`
 	Consumer       *EntityId              `json:"consumer,omitempty"`
+	AllTags        []string               `json:"tags"`
+	Tags           []string               `json:"-"`
 }
 type PluginCollection struct {
 	Plugins []Plugin `json:"data"`
@@ -42,5 +44,3 @@ func PluginDecodeId(s string) (string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1]
 }
-
-//TAGS

@@ -8,13 +8,15 @@ const (
 )
 
 type ConsumerJWT struct {
-	ControlPlaneId string `json:"-"`
-	ConsumerId     string `json:"-"`
-	Id             string `json:"id"`
-	Key            string `json:"key,omitempty"`
-	Algorithm      string `json:"algorithm"`
-	RSAPublicKey   string `json:"rsa_public_key,omitempty"`
-	Secret         string `json:"secret,omitempty"`
+	ControlPlaneId string   `json:"-"`
+	ConsumerId     string   `json:"-"`
+	Id             string   `json:"id"`
+	Key            string   `json:"key,omitempty"`
+	Algorithm      string   `json:"algorithm"`
+	RSAPublicKey   string   `json:"rsa_public_key,omitempty"`
+	Secret         string   `json:"secret,omitempty"`
+	AllTags        []string `json:"tags"`
+	Tags           []string `json:"-"`
 }
 
 func (cj *ConsumerJWT) ConsumerJWTEncodeId() string {
@@ -25,5 +27,3 @@ func ConsumerJWTDecodeId(s string) (string, string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1], tokens[2]
 }
-
-//TAGS

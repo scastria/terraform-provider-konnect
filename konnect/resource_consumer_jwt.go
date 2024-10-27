@@ -19,6 +19,7 @@ func resourceConsumerJWT() *schema.Resource {
 		ReadContext:   resourceConsumerJWTRead,
 		UpdateContext: resourceConsumerJWTUpdate,
 		DeleteContext: resourceConsumerJWTDelete,
+		CustomizeDiff: resourceConsumerJWTDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -51,6 +52,20 @@ func resourceConsumerJWT() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_tags": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"jwt_id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -59,7 +74,19 @@ func resourceConsumerJWT() *schema.Resource {
 	}
 }
 
-func fillConsumerJWT(c *client.ConsumerJWT, d *schema.ResourceData) {
+func resourceConsumerJWTDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+	c := m.(*client.Client)
+	tags := []string{}
+	tagsSet, ok := diff.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+	}
+	allTags := unionArrays(tags, c.DefaultTags)
+	diff.SetNew("all_tags", allTags)
+	return nil
+}
+
+func fillConsumerJWT(c *client.ConsumerJWT, d *schema.ResourceData, defaultTags []string) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.ConsumerId = d.Get("consumer_id").(string)
 	c.Algorithm = d.Get("algorithm").(string)
@@ -75,9 +102,16 @@ func fillConsumerJWT(c *client.ConsumerJWT, d *schema.ResourceData) {
 	if ok {
 		c.RSAPublicKey = rsaPublicKey.(string)
 	}
+	tags := []string{}
+	tagsSet, ok := d.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+		c.Tags = tags
+	}
+	c.AllTags = unionArrays(tags, defaultTags)
 }
 
-func fillResourceDataFromConsumerJWT(c *client.ConsumerJWT, d *schema.ResourceData) {
+func fillResourceDataFromConsumerJWT(c *client.ConsumerJWT, d *schema.ResourceData, defaultTags []string) {
 	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("consumer_id", c.ConsumerId)
 	d.Set("algorithm", c.Algorithm)
@@ -85,6 +119,8 @@ func fillResourceDataFromConsumerJWT(c *client.ConsumerJWT, d *schema.ResourceDa
 	d.Set("secret", c.Secret)
 	d.Set("rsa_public_key", c.RSAPublicKey)
 	d.Set("jwt_id", c.Id)
+	d.Set("all_tags", c.AllTags)
+	d.Set("tags", subtractArrays(c.AllTags, defaultTags))
 }
 
 func resourceConsumerJWTCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -92,7 +128,7 @@ func resourceConsumerJWTCreate(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	newConsumerJWT := client.ConsumerJWT{}
-	fillConsumerJWT(&newConsumerJWT, d)
+	fillConsumerJWT(&newConsumerJWT, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(newConsumerJWT)
 	if err != nil {
 		d.SetId("")
@@ -116,7 +152,7 @@ func resourceConsumerJWTCreate(ctx context.Context, d *schema.ResourceData, m in
 	retVal.ControlPlaneId = newConsumerJWT.ControlPlaneId
 	retVal.ConsumerId = newConsumerJWT.ConsumerId
 	d.SetId(retVal.ConsumerJWTEncodeId())
-	fillResourceDataFromConsumerJWT(retVal, d)
+	fillResourceDataFromConsumerJWT(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -142,7 +178,7 @@ func resourceConsumerJWTRead(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	retVal.ControlPlaneId = controlPlaneId
 	retVal.ConsumerId = consumerId
-	fillResourceDataFromConsumerJWT(retVal, d)
+	fillResourceDataFromConsumerJWT(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -152,7 +188,7 @@ func resourceConsumerJWTUpdate(ctx context.Context, d *schema.ResourceData, m in
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upConsumerJWT := client.ConsumerJWT{}
-	fillConsumerJWT(&upConsumerJWT, d)
+	fillConsumerJWT(&upConsumerJWT, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(upConsumerJWT)
 	if err != nil {
 		return diag.FromErr(err)
@@ -172,7 +208,7 @@ func resourceConsumerJWTUpdate(ctx context.Context, d *schema.ResourceData, m in
 	}
 	retVal.ControlPlaneId = controlPlaneId
 	retVal.ConsumerId = consumerId
-	fillResourceDataFromConsumerJWT(retVal, d)
+	fillResourceDataFromConsumerJWT(retVal, d, c.DefaultTags)
 	return diags
 }
 

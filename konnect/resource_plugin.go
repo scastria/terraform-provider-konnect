@@ -21,6 +21,7 @@ func resourcePlugin() *schema.Resource {
 		ReadContext:   resourcePluginRead,
 		UpdateContext: resourcePluginUpdate,
 		DeleteContext: resourcePluginDelete,
+		CustomizeDiff: resourcePluginDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -72,6 +73,20 @@ func resourcePlugin() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_tags": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"config_all_json": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -84,7 +99,19 @@ func resourcePlugin() *schema.Resource {
 	}
 }
 
-func fillPlugin(c *client.Plugin, d *schema.ResourceData) {
+func resourcePluginDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+	c := m.(*client.Client)
+	tags := []string{}
+	tagsSet, ok := diff.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+	}
+	allTags := unionArrays(tags, c.DefaultTags)
+	diff.SetNew("all_tags", allTags)
+	return nil
+}
+
+func fillPlugin(c *client.Plugin, d *schema.ResourceData, defaultTags []string) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.Enabled = d.Get("enabled").(bool)
 	name, ok := d.GetOk("name")
@@ -124,9 +151,16 @@ func fillPlugin(c *client.Plugin, d *schema.ResourceData) {
 		c.ConfigAll = map[string]interface{}{}
 		json.Unmarshal([]byte(configAllJson.(string)), &c.ConfigAll)
 	}
+	tags := []string{}
+	tagsSet, ok := d.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+		c.Tags = tags
+	}
+	c.AllTags = unionArrays(tags, defaultTags)
 }
 
-func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema.ResourceData, pluginSchema *client.PluginSchema) {
+func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema.ResourceData, pluginSchema *client.PluginSchema, defaultTags []string) {
 	// Grab just the schema for config parameter from plugin schema
 	var fieldSchema []map[string]client.PluginField
 	fieldSchema = nil
@@ -172,6 +206,8 @@ func fillResourceDataFromPlugin(ctx context.Context, c *client.Plugin, d *schema
 	d.Set("config_json", string(bytes[:]))
 	bytes, _ = json.Marshal(c.ConfigAll)
 	d.Set("config_all_json", string(bytes[:]))
+	d.Set("all_tags", c.AllTags)
+	d.Set("tags", subtractArrays(c.AllTags, defaultTags))
 }
 
 func pruneConfigValues(ctx context.Context, config map[string]interface{}, configSchema []map[string]client.PluginField, isShorthand bool) {
@@ -228,7 +264,7 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	newPlugin := client.Plugin{}
-	fillPlugin(&newPlugin, d)
+	fillPlugin(&newPlugin, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(newPlugin)
 	if err != nil {
 		d.SetId("")
@@ -257,7 +293,7 @@ func resourcePluginCreate(ctx context.Context, d *schema.ResourceData, m interfa
 	retVal.ConfigAll = copyMapByJSON(retVal.Config)
 	retVal.ControlPlaneId = newPlugin.ControlPlaneId
 	d.SetId(retVal.PluginEncodeId())
-	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
+	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema, c.DefaultTags)
 	return diags
 }
 
@@ -288,7 +324,7 @@ func resourcePluginRead(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	retVal.ConfigAll = copyMapByJSON(retVal.Config)
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
+	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema, c.DefaultTags)
 	return diags
 }
 
@@ -298,7 +334,7 @@ func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upPlugin := client.Plugin{}
-	fillPlugin(&upPlugin, d)
+	fillPlugin(&upPlugin, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(upPlugin)
 	if err != nil {
 		return diag.FromErr(err)
@@ -322,7 +358,7 @@ func resourcePluginUpdate(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 	retVal.ConfigAll = copyMapByJSON(retVal.Config)
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema)
+	fillResourceDataFromPlugin(ctx, retVal, d, pluginSchema, c.DefaultTags)
 	return diags
 }
 

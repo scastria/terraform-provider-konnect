@@ -8,12 +8,14 @@ const (
 )
 
 type ConsumerBasic struct {
-	ControlPlaneId string `json:"-"`
-	ConsumerId     string `json:"-"`
-	Id             string `json:"id"`
-	Username       string `json:"username"`
-	Password       string `json:"password"`
-	PasswordHash   string `json:"-"`
+	ControlPlaneId string   `json:"-"`
+	ConsumerId     string   `json:"-"`
+	Id             string   `json:"id"`
+	Username       string   `json:"username"`
+	Password       string   `json:"password"`
+	PasswordHash   string   `json:"-"`
+	AllTags        []string `json:"tags"`
+	Tags           []string `json:"-"`
 }
 
 func (cb *ConsumerBasic) ConsumerBasicEncodeId() string {
@@ -24,5 +26,3 @@ func ConsumerBasicDecodeId(s string) (string, string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1], tokens[2]
 }
-
-//TAGS

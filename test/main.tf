@@ -7,6 +7,9 @@ terraform {
 }
 
 provider "konnect" {
+  default_tags = [
+    "default_tag"
+  ]
 }
 
 # resource "konnect_custom_plugin_schema" "CPS" {
@@ -38,11 +41,17 @@ provider "konnect" {
 #  custom_id = "Bob"
 #}
 
-#resource "konnect_service" "S" {
-#  control_plane_id = data.konnect_control_plane.RG.id
-#  host = "mockbin.org"
-#  name = "TFTest"
-#}
+# resource "konnect_service" "S" {
+#   control_plane_id = data.konnect_control_plane.RG.id
+#   host = "mockbin.org"
+#   name = "TFTest"
+#   port = 443
+#   protocol = "https"
+#   tags = [
+#     "tag1",
+#     "tag2"
+#   ]
+# }
 
 #resource "konnect_route" "R" {
 #  control_plane_id = data.konnect_control_plane.RG.id

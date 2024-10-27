@@ -24,9 +24,11 @@ resource "konnect_consumer_basic" "example" {
 * `consumer_id` - **(Required, String)** The id of the consumer.
 * `username` - **(Required, String)** The username value.
 * `password` - **(Required, String)** The password value.
+* `tags` - **(Optional, List of String)** An extra list of tags to assign to the Basic Auth in addition to the `default_tags` configured in the provider.
 ## Attribute Reference
 * `id` - **(String)** Same as `control_plane_id`:`consumer_id`:`basic_id`
 * `password_hash` - **(String)** Hash of the password
 * `basic_id` - **(String)** Id of the consumer basic auth alone
+* `all_tags` - **(List of String)** The complete list of tags assigned to the Basic Auth, including the `tags` defined on this resource and the `default_tags` configured in the provider.
 ## Import
 Consumer basics can be imported using a proper value of `id` as described above

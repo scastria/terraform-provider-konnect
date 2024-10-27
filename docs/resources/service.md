@@ -26,8 +26,10 @@ resource "konnect_service" "example" {
 * `read_timeout` - **(Optional, Integer)** The timeout in milliseconds between two successive read operations for transmitting a request to the host. Default: `60000`
 * `write_timeout` - **(Optional, Integer)** The timeout in milliseconds between two successive write operations for transmitting a request to the host. Default: `60000`
 * `enabled` - **(Optional, Boolean)** Whether the service is active. Default: `true`
+* `tags` - **(Optional, List of String)** An extra list of tags to assign to the service in addition to the `default_tags` configured in the provider.
 ## Attribute Reference
 * `id` - **(String)** Same as `control_plane_id`:`service_id`
 * `service_id` - **(String)** Id of the service alone
+* `all_tags` - **(List of String)** The complete list of tags assigned to the service, including the `tags` defined on this resource and the `default_tags` configured in the provider.
 ## Import
 Services can be imported using a proper value of `id` as described above

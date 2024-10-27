@@ -19,7 +19,7 @@ func resourceService() *schema.Resource {
 		ReadContext:   resourceServiceRead,
 		UpdateContext: resourceServiceUpdate,
 		DeleteContext: resourceServiceDelete,
-		CustomizeDiff: resourceDiff,
+		CustomizeDiff: resourceServiceDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -103,7 +103,7 @@ func resourceService() *schema.Resource {
 	}
 }
 
-func resourceDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+func resourceServiceDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
 	c := m.(*client.Client)
 	tags := []string{}
 	tagsSet, ok := diff.GetOk("tags")

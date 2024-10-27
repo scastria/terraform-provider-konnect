@@ -27,3 +27,4 @@ provider "konnect" {
 * `region` - **(Optional, String)** The region for accessing region specific resources. Can be specified via env variable `KONNECT_REGION`. Allowed values: `us`, `eu`, `au`. Default: `us`
 * `num_retries` - **(Optional, Integer)** Number of retries for each Konnect API call in case of 429-Too Many Requests or any 5XX status code. Can be specified via env variable `KONNECT_NUM_RETRIES`. Default: 3.
 * `retry_delay` - **(Optional, Integer)** How long to wait (in seconds) in between retries. Can be specified via env variable `KONNECT_RETRY_DELAY`. Default: 30.
+* `default_tags` - **(Optional, List of String)** List of tags to assign to all resources created by this provider, if the resource supports tags.

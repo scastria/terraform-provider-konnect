@@ -19,6 +19,7 @@ func resourceRoute() *schema.Resource {
 		ReadContext:   resourceRouteRead,
 		UpdateContext: resourceRouteUpdate,
 		DeleteContext: resourceRouteDelete,
+		CustomizeDiff: resourceRouteDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -125,11 +126,37 @@ func resourceRoute() *schema.Resource {
 					},
 				},
 			},
+			"tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_tags": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
 
-func fillRoute(c *client.Route, d *schema.ResourceData) {
+func resourceRouteDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+	c := m.(*client.Client)
+	tags := []string{}
+	tagsSet, ok := diff.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+	}
+	allTags := unionArrays(tags, c.DefaultTags)
+	diff.SetNew("all_tags", allTags)
+	return nil
+}
+
+func fillRoute(c *client.Route, d *schema.ResourceData, defaultTags []string) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	c.StripPath = d.Get("strip_path").(bool)
 	c.PreserveHost = d.Get("preserve_host").(bool)
@@ -188,9 +215,16 @@ func fillRoute(c *client.Route, d *schema.ResourceData) {
 	} else {
 		c.Headers = nil
 	}
+	tags := []string{}
+	tagsSet, ok := d.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+		c.Tags = tags
+	}
+	c.AllTags = unionArrays(tags, defaultTags)
 }
 
-func fillResourceDataFromRoute(c *client.Route, d *schema.ResourceData) {
+func fillResourceDataFromRoute(c *client.Route, d *schema.ResourceData, defaultTags []string) {
 	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("name", c.Name)
 	d.Set("protocols", c.Protocols)
@@ -221,6 +255,8 @@ func fillResourceDataFromRoute(c *client.Route, d *schema.ResourceData) {
 		}
 	}
 	d.Set("header", konnectHeaders)
+	d.Set("all_tags", c.AllTags)
+	d.Set("tags", subtractArrays(c.AllTags, defaultTags))
 }
 
 func resourceRouteCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -228,7 +264,7 @@ func resourceRouteCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	newRoute := client.Route{}
-	fillRoute(&newRoute, d)
+	fillRoute(&newRoute, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(newRoute)
 	if err != nil {
 		d.SetId("")
@@ -251,7 +287,7 @@ func resourceRouteCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	retVal.ControlPlaneId = newRoute.ControlPlaneId
 	d.SetId(retVal.RouteEncodeId())
-	fillResourceDataFromRoute(retVal, d)
+	fillResourceDataFromRoute(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -276,7 +312,7 @@ func resourceRouteRead(ctx context.Context, d *schema.ResourceData, m interface{
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromRoute(retVal, d)
+	fillResourceDataFromRoute(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -286,7 +322,7 @@ func resourceRouteUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upRoute := client.Route{}
-	fillRoute(&upRoute, d)
+	fillRoute(&upRoute, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(upRoute)
 	if err != nil {
 		return diag.FromErr(err)
@@ -305,7 +341,7 @@ func resourceRouteUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromRoute(retVal, d)
+	fillResourceDataFromRoute(retVal, d, c.DefaultTags)
 	return diags
 }
 

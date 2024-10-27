@@ -8,10 +8,12 @@ const (
 )
 
 type Consumer struct {
-	ControlPlaneId string `json:"-"`
-	Id             string `json:"id"`
-	Username       string `json:"username"`
-	CustomId       string `json:"custom_id"`
+	ControlPlaneId string   `json:"-"`
+	Id             string   `json:"id"`
+	Username       string   `json:"username"`
+	CustomId       string   `json:"custom_id"`
+	AllTags        []string `json:"tags"`
+	Tags           []string `json:"-"`
 }
 type ConsumerCollection struct {
 	Consumers []Consumer `json:"data"`
@@ -25,5 +27,3 @@ func ConsumerDecodeId(s string) (string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1]
 }
-
-//TAGS

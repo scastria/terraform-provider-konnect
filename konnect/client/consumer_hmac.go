@@ -8,11 +8,13 @@ const (
 )
 
 type ConsumerHMAC struct {
-	ControlPlaneId string `json:"-"`
-	ConsumerId     string `json:"-"`
-	Id             string `json:"id"`
-	Username       string `json:"username"`
-	Secret         string `json:"secret,omitempty"`
+	ControlPlaneId string   `json:"-"`
+	ConsumerId     string   `json:"-"`
+	Id             string   `json:"id"`
+	Username       string   `json:"username"`
+	Secret         string   `json:"secret,omitempty"`
+	AllTags        []string `json:"tags"`
+	Tags           []string `json:"-"`
 }
 
 func (ch *ConsumerHMAC) ConsumerHMACEncodeId() string {
@@ -23,5 +25,3 @@ func ConsumerHMACDecodeId(s string) (string, string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1], tokens[2]
 }
-
-//TAGS

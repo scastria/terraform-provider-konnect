@@ -8,10 +8,12 @@ const (
 )
 
 type ConsumerKey struct {
-	ControlPlaneId string `json:"-"`
-	ConsumerId     string `json:"-"`
-	Id             string `json:"id"`
-	Key            string `json:"key,omitempty"`
+	ControlPlaneId string   `json:"-"`
+	ConsumerId     string   `json:"-"`
+	Id             string   `json:"id"`
+	Key            string   `json:"key,omitempty"`
+	AllTags        []string `json:"tags"`
+	Tags           []string `json:"-"`
 }
 
 func (ck *ConsumerKey) ConsumerKeyEncodeId() string {
@@ -22,5 +24,3 @@ func ConsumerKeyDecodeId(s string) (string, string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1], tokens[2]
 }
-
-//TAGS

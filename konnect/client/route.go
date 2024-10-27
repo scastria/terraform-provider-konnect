@@ -24,6 +24,8 @@ type Route struct {
 	RequestBuffering        bool                `json:"request_buffering"`
 	ResponseBuffering       bool                `json:"response_buffering"`
 	Service                 *EntityId           `json:"service,omitempty"`
+	AllTags                 []string            `json:"tags"`
+	Tags                    []string            `json:"-"`
 }
 type RouteCollection struct {
 	Routes []Route `json:"data"`
@@ -37,5 +39,3 @@ func RouteDecodeId(s string) (string, string) {
 	tokens := strings.Split(s, IdSeparator)
 	return tokens[0], tokens[1]
 }
-
-//TAGS

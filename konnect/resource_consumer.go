@@ -18,6 +18,7 @@ func resourceConsumer() *schema.Resource {
 		ReadContext:   resourceConsumerRead,
 		UpdateContext: resourceConsumerUpdate,
 		DeleteContext: resourceConsumerDelete,
+		CustomizeDiff: resourceConsumerDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -36,6 +37,20 @@ func resourceConsumer() *schema.Resource {
 				Optional:     true,
 				AtLeastOneOf: []string{"username"},
 			},
+			"tags": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"all_tags": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"consumer_id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -44,7 +59,19 @@ func resourceConsumer() *schema.Resource {
 	}
 }
 
-func fillConsumer(c *client.Consumer, d *schema.ResourceData) {
+func resourceConsumerDiff(ctx context.Context, diff *schema.ResourceDiff, m interface{}) error {
+	c := m.(*client.Client)
+	tags := []string{}
+	tagsSet, ok := diff.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+	}
+	allTags := unionArrays(tags, c.DefaultTags)
+	diff.SetNew("all_tags", allTags)
+	return nil
+}
+
+func fillConsumer(c *client.Consumer, d *schema.ResourceData, defaultTags []string) {
 	c.ControlPlaneId = d.Get("control_plane_id").(string)
 	username, ok := d.GetOk("username")
 	if ok {
@@ -54,13 +81,22 @@ func fillConsumer(c *client.Consumer, d *schema.ResourceData) {
 	if ok {
 		c.CustomId = customId.(string)
 	}
+	tags := []string{}
+	tagsSet, ok := d.GetOk("tags")
+	if ok {
+		tags = convertSetToArray(tagsSet.(*schema.Set))
+		c.Tags = tags
+	}
+	c.AllTags = unionArrays(tags, defaultTags)
 }
 
-func fillResourceDataFromConsumer(c *client.Consumer, d *schema.ResourceData) {
+func fillResourceDataFromConsumer(c *client.Consumer, d *schema.ResourceData, defaultTags []string) {
 	d.Set("control_plane_id", c.ControlPlaneId)
 	d.Set("username", c.Username)
 	d.Set("custom_id", c.CustomId)
 	d.Set("consumer_id", c.Id)
+	d.Set("all_tags", c.AllTags)
+	d.Set("tags", subtractArrays(c.AllTags, defaultTags))
 }
 
 func resourceConsumerCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -68,7 +104,7 @@ func resourceConsumerCreate(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	newConsumer := client.Consumer{}
-	fillConsumer(&newConsumer, d)
+	fillConsumer(&newConsumer, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(newConsumer)
 	if err != nil {
 		d.SetId("")
@@ -91,7 +127,7 @@ func resourceConsumerCreate(ctx context.Context, d *schema.ResourceData, m inter
 	}
 	retVal.ControlPlaneId = newConsumer.ControlPlaneId
 	d.SetId(retVal.ConsumerEncodeId())
-	fillResourceDataFromConsumer(retVal, d)
+	fillResourceDataFromConsumer(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -116,7 +152,7 @@ func resourceConsumerRead(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromConsumer(retVal, d)
+	fillResourceDataFromConsumer(retVal, d, c.DefaultTags)
 	return diags
 }
 
@@ -126,7 +162,7 @@ func resourceConsumerUpdate(ctx context.Context, d *schema.ResourceData, m inter
 	c := m.(*client.Client)
 	buf := bytes.Buffer{}
 	upConsumer := client.Consumer{}
-	fillConsumer(&upConsumer, d)
+	fillConsumer(&upConsumer, d, c.DefaultTags)
 	err := json.NewEncoder(&buf).Encode(upConsumer)
 	if err != nil {
 		return diag.FromErr(err)
@@ -145,7 +181,7 @@ func resourceConsumerUpdate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 	retVal.ControlPlaneId = controlPlaneId
-	fillResourceDataFromConsumer(retVal, d)
+	fillResourceDataFromConsumer(retVal, d, c.DefaultTags)
 	return diags
 }
 

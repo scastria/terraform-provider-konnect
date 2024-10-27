@@ -26,8 +26,10 @@ resource "konnect_consumer_jwt" "example" {
 * `secret` - **(Optional/Computed, String)** The secret value.  If left out, a key will be generated for you.
 * `algorithm` - **(Optional, String)** The algorithm for the JWT.  Allowed values: `HS256`, `HS384`, `HS512`, `RS256`, `RS384`, `RS512`, `ES256`, `ES384`. Default: `HS256`
 * `rsa_public_key` - **(Optional, String)** The RSA public key in PEM format for the JWT.  Required if `algorithm` is `RS256`, `RS384`, `RS512`, `ES256`, or `ES384`.
+* `tags` - **(Optional, List of String)** An extra list of tags to assign to the JWT in addition to the `default_tags` configured in the provider.
 ## Attribute Reference
 * `id` - **(String)** Same as `control_plane_id`:`consumer_id`:`jwt_id`
 * `jwt_id` - **(String)** Id of the consumer JWT alone
+* `all_tags` - **(List of String)** The complete list of tags assigned to the JWT, including the `tags` defined on this resource and the `default_tags` configured in the provider.
 ## Import
 Consumer JWTs can be imported using a proper value of `id` as described above

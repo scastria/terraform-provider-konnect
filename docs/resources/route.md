@@ -41,11 +41,13 @@ resource "konnect_route" "example" {
 * `request_buffering` - **(Optional, Boolean)** Whether to enable request body buffering. Default: `true`
 * `response_buffering` - **(Optional, Boolean)** Whether to enable response body buffering. Default: `true`
 * `header` - **(Optional, set{header})** Configuration block for a header.  Can be specified multiple times for each header.  Each block supports the fields documented below.
+* `tags` - **(Optional, List of String)** An extra list of tags to assign to the route in addition to the `default_tags` configured in the provider.
 ### header
 * `name` - **(Required, String)** Name of header this route should require.
 * `values` - **(Required, List of String)** Allowed values this header should equal.
 ## Attribute Reference
 * `id` - **(String)** Same as `control_plane_id`:`route_id`
 * `route_id` - **(String)** Id of the route alone
+* `all_tags` - **(List of String)** The complete list of tags assigned to the route, including the `tags` defined on this resource and the `default_tags` configured in the provider.
 ## Import
 Routes can be imported using a proper value of `id` as described above
