@@ -150,12 +150,19 @@ data "konnect_control_plane" "RG" {
   name = "development"
 }
 
-data "konnect_consumer" "C" {
-  control_plane_id = data.konnect_control_plane.RG.id
-  search_username = "web"
-#  search_custom_id = null
-}
+# data "konnect_consumer" "C" {
+#   control_plane_id = data.konnect_control_plane.RG.id
+#   search_username = "web"
+# #  search_custom_id = null
+# }
 
+data "konnect_service" "S" {
+  control_plane_id = data.konnect_control_plane.RG.id
+  search_name = "api"
+}
+# output "test" {
+#   value = data.konnect_service.S
+# }
 #resource "konnect_consumer_key" "CK" {
 #  control_plane_id = data.konnect_control_plane.RG.id
 #  consumer_id = data.konnect_consumer.C.consumer_id

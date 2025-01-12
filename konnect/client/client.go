@@ -20,6 +20,7 @@ const (
 	IdSeparator                  = ":"
 	FilterName                   = "filter[name]"
 	FilterNameContains           = "filter[name][contains]"
+	FilterNameEquals             = "filter[name][eq]"
 	FilterFullName               = "filter[full_name]"
 	FilterFullNameContains       = "filter[full_name][contains]"
 	FilterEmail                  = "filter[email]"
