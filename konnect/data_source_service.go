@@ -39,7 +39,7 @@ func dataSourceService() *schema.Resource {
 				Computed: true,
 			},
 			"protocol": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"port": {

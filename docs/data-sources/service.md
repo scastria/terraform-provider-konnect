@@ -19,7 +19,7 @@ data "konnect_service" "example" {
 * `name` - **(Optional, String)** The filter string to apply to the name of the service. Uses equality.
 ## Attribute Reference
 * `retries` - **(Integer)** The number of retries to execute upon failure to proxy.
-* `protocol` - **(Integer)** The protocol used to communicate with the host.
+* `protocol` - **(String)** The protocol used to communicate with the host.
 * `port` - **(Integer)** The port used to communicate with the host.
 * `path` - **(String)** The path to be used in requests to the host.
 * `connect_timeout` - **(Integer)** The timeout in milliseconds for establishing a connection to the host.

@@ -27,12 +27,11 @@ type ServiceCollection struct {
 	Services []Service `json:"data"`
 }
 type ListService struct {
-	ControlPlaneId string `json:"-"`
-	Id             string `json:"id"`
-	Name           string `json:"name"`
-	Retries        int    `json:"retries"`
-	//This is a bug in Konnect API as protocol should be a string
-	Protocol       int      `json:"protocol"`
+	ControlPlaneId string   `json:"-"`
+	Id             string   `json:"id"`
+	Name           string   `json:"name"`
+	Retries        int      `json:"retries"`
+	Protocol       string   `json:"protocol"`
 	Host           string   `json:"host"`
 	Port           int      `json:"port"`
 	Path           string   `json:"path"`
