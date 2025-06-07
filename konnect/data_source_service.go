@@ -102,7 +102,7 @@ func dataSourceServiceRead(ctx context.Context, d *schema.ResourceData, m interf
 	if ok {
 		requestQuery[client.FilterNameEquals] = []string{name.(string)}
 	}
-	body, err := c.HttpRequest(ctx, false, http.MethodGet, requestPath, requestQuery, nil, &bytes.Buffer{})
+	body, err := c.HttpRequest(ctx, true, http.MethodGet, requestPath, requestQuery, nil, &bytes.Buffer{})
 	if err != nil {
 		d.SetId("")
 		return diag.FromErr(err)
