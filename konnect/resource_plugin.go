@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/go-http-utils/headers"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -12,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/structure"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/scastria/terraform-provider-konnect/konnect/client"
-	"net/http"
 )
 
 func resourcePlugin() *schema.Resource {
@@ -217,6 +218,10 @@ func pruneConfigValues(ctx context.Context, config map[string]interface{}, confi
 			if ok {
 				// If field type is record, then recurse
 				if field.Type == "record" {
+					if configValue == nil {
+						delete(config, fieldKey)
+						continue
+					}
 					childConfigValue := configValue.(map[string]interface{})
 					pruneConfigValues(ctx, childConfigValue, field.Fields, false)
 					pruneConfigValues(ctx, childConfigValue, field.ShorthandFields, true)
